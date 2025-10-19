@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAP - Math Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>π</text></svg>">
+    <meta name="theme-color" content="#4ecdc4">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GAP Math Game">
+</head>
+<body>
+    <div class="game-container">
+        <div class="title-screen" id="titleScreen">
+            <div class="game-title">
+                <h1 class="main-title">GAP</h1>
+                <p class="academy-name">Gifted Academy of Pi</p>
+                <div class="welcome-banner">
+                    <p>Welcome to the Gifted Academy of Pi. The purpose of this website is to learn through fun games.</p>
+                </div>
+                <p class="subtitle">Math Adventure</p>
+            </div>
+            <div class="title-animation">
+                <div class="floating-number">1</div>
+                <div class="floating-number">2</div>
+                <div class="floating-number">3</div>
+                <div class="floating-number">+</div>
+                <div class="floating-number">-</div>
+                <div class="floating-number">×</div>
+                <div class="floating-number">÷</div>
+                <div class="floating-number">π</div>
+                <div class="floating-number">π</div>
+            </div>
+            <div class="menu-buttons">
+                <div class="level-button-container">
+                    <button class="level-button" id="level1Btn">Level 1</button>
+                    <div class="level-tooltip" id="level1Tooltip">Fill in the Digits</div>
+                </div>
+                <button class="level-button" id="level2Btn">Level 2</button>
+                <button class="level-button" id="level3Btn">Level 3</button>
+                <button class="fullscreen-btn" id="fullscreenBtn" title="Press F11 or Ctrl+Shift+F for fullscreen">🖥️ Fullscreen</button>
+            </div>
+        </div>
+        
+        <div class="game-screen" id="gameScreen" style="display: none;">
+            <div class="game-math-effects" id="gameMathEffects"></div>
+            <div class="game-header">
+                <h2>Level 1 - Fill in the Digits</h2>
+            </div>
+            <div class="question-container">
+                <div class="pi-bubble" id="piBubble" style="display: none;">
+                    <div class="pi-equation" id="piEquation">
+                        π = 3.14 
+                        <span class="blank-hint" data-hint="Hint: any number multiplied by this equals itself">_</span>
+                        <span class="blank-hint" data-hint="Hint: any number multiplied by this ends with 0 or 5">_</span>
+                        9 
+                        <span class="blank-hint" data-hint="Hint: first prime number and the only even prime">_</span>
+                        <span class="blank-hint" data-hint="Hint: the first perfect number, a perfect number is a number where all it's factors add up to itself">_</span>
+                        <span class="blank-hint" data-hint="Hint: Bob had 17 grapes, he eats 2 of the grapes and then shares it among his friends Jimmy and Nick. If he evenly distributed the grapes to the three people, how many did Jimmy get?">_</span>
+                        3 
+                        <span class="blank-hint" data-hint="Hint: a box has 14 red marbles and 8 blue marbles. Then, Jeff took out 3 red marbles and 2 blue marbles. How many more red marbles does the box have than the blue marbles?">_</span>
+                    </div>
+                </div>
+                <div class="question" id="question">What is 5 + 3?</div>
+                <div class="answer-options" id="answerOptions">
+                    <!-- Answer options will be generated dynamically -->
+                </div>
+                
+                <!-- Digital Keyboard for Level 2 -->
+                <div class="digital-keyboard" id="digitalKeyboard" style="display: none;">
+                    <div class="keyboard-display">
+                        <input type="text" id="keyboardInput" placeholder="Enter your answer..." readonly>
+                    </div>
+                    <div class="keyboard-grid">
+                        <button class="keyboard-key" data-key="1">1</button>
+                        <button class="keyboard-key" data-key="2">2</button>
+                        <button class="keyboard-key" data-key="3">3</button>
+                        <button class="keyboard-key" data-key="4">4</button>
+                        <button class="keyboard-key" data-key="5">5</button>
+                        <button class="keyboard-key" data-key="6">6</button>
+                        <button class="keyboard-key" data-key="7">7</button>
+                        <button class="keyboard-key" data-key="8">8</button>
+                        <button class="keyboard-key" data-key="9">9</button>
+                        <button class="keyboard-key" data-key="0">0</button>
+                        <button class="keyboard-key pi-key" data-key="π">π</button>
+                        <button class="keyboard-key plus-key" data-key="+">+</button>
+                        <button class="keyboard-key minus-key" data-key="-">-</button>
+                        <button class="keyboard-key clear-key" data-key="clear">⌫</button>
+                    </div>
+                    <button class="keyboard-submit" id="keyboardSubmit">Submit Answer</button>
+                </div>
+                <div class="submit-section" id="submitSection" style="display: none;">
+                    <button class="submit-btn" id="submitBtn">Submit Answers</button>
+                    <div class="progress-display" id="progressDisplay"></div>
+                </div>
+            </div>
+            <div class="game-controls">
+                <button class="back-btn" id="backBtn">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Custom Modal -->
+    <div id="customModal" class="custom-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Congratulations!</h3>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">You have completed the level!</p>
+            </div>
+            <div class="modal-footer">
+                <button id="modalOkBtn" class="modal-btn">OK</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
