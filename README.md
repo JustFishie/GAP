@@ -4,7 +4,7 @@ A fun and interactive math learning game designed to help students practice math
 
 ## 🎮 Play the Game
 
-[Click here to play!](#) _(Link will be added after publishing)_
+**[🎮 Click here to play GAP Math Game!](https://justfishie.github.io/GAP/)**
 
 ## 📖 About
 

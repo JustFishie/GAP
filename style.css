@@ -130,7 +130,7 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* Floating Animation */
+/* Floating Animation - Space Theme */
 .title-animation {
     position: absolute;
     top: 0;
@@ -140,6 +140,7 @@ body {
     pointer-events: none;
     z-index: 1;
     overflow: hidden;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(102, 126, 234, 0.1) 100%);
 }
 
 .floating-number {
@@ -147,55 +148,56 @@ body {
     font-size: 2rem;
     font-weight: bold;
     color: rgba(255, 255, 255, 0.3);
-    animation: float 6s ease-in-out infinite;
+    animation: float 8s linear infinite;
+    will-change: transform;
 }
 
 .floating-number:nth-child(1) {
     top: 10%;
     left: 5%;
-    animation-delay: 0s;
+    animation: spaceBounce1 12s linear infinite;
 }
 
 .floating-number:nth-child(2) {
     top: 15%;
     right: 5%;
-    animation-delay: 1s;
+    animation: spaceBounce2 10s linear infinite;
 }
 
 .floating-number:nth-child(3) {
     bottom: 10%;
     left: 5%;
-    animation-delay: 2s;
+    animation: spaceBounce3 14s linear infinite;
 }
 
 .floating-number:nth-child(4) {
     top: 25%;
     left: 2%;
-    animation-delay: 3s;
+    animation: spaceBounce4 11s linear infinite;
 }
 
 .floating-number:nth-child(5) {
     bottom: 25%;
     right: 2%;
-    animation-delay: 4s;
+    animation: spaceBounce5 13s linear infinite;
 }
 
 .floating-number:nth-child(6) {
     top: 70%;
     left: 8%;
-    animation-delay: 5s;
+    animation: spaceBounce6 9s linear infinite;
 }
 
 .floating-number:nth-child(7) {
     bottom: 15%;
     right: 8%;
-    animation-delay: 6s;
+    animation: spaceBounce7 15s linear infinite;
 }
 
 .floating-number:nth-child(8) {
     top: 35%;
     left: 3%;
-    animation-delay: 7s;
+    animation: spaceBounce8 10s linear infinite;
     color: #4ecdc4;
     font-size: 2.5rem;
 }
@@ -203,96 +205,95 @@ body {
 .floating-number:nth-child(9) {
     bottom: 35%;
     right: 3%;
-    animation-delay: 8s;
+    animation: spaceBounce9 12s linear infinite;
     color: #4ecdc4;
     font-size: 2.5rem;
 }
 
-@keyframes float {
-    0% {
-        transform: translate(0px, 0px) rotate(0deg);
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.3;
-    }
-    25% {
-        transform: translate(15px, -20px) rotate(45deg);
-        opacity: 0.5;
-    }
-    50% {
-        transform: translate(-10px, -35px) rotate(120deg);
-        opacity: 0.7;
-    }
-    75% {
-        transform: translate(20px, -15px) rotate(200deg);
-        opacity: 0.5;
-    }
-    90% {
-        opacity: 0.3;
-    }
-    100% {
-        transform: translate(0px, 0px) rotate(360deg);
-        opacity: 0;
-    }
+/* Space bouncing animations - symbols move around and bounce off edges */
+@keyframes spaceBounce1 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    20% { transform: translate(150px, -80px) rotate(120deg); }
+    40% { transform: translate(250px, 100px) rotate(240deg); }
+    60% { transform: translate(100px, 200px) rotate(360deg); }
+    80% { transform: translate(-80px, 150px) rotate(480deg); }
+    100% { transform: translate(0, 0) rotate(600deg); }
 }
 
-@keyframes float2 {
-    0% {
-        transform: translate(0px, 0px) rotate(0deg);
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.3;
-    }
-    25% {
-        transform: translate(-20px, 15px) rotate(-60deg);
-        opacity: 0.5;
-    }
-    50% {
-        transform: translate(25px, -10px) rotate(140deg);
-        opacity: 0.7;
-    }
-    75% {
-        transform: translate(-15px, 20px) rotate(-200deg);
-        opacity: 0.5;
-    }
-    90% {
-        opacity: 0.3;
-    }
-    100% {
-        transform: translate(0px, 0px) rotate(-360deg);
-        opacity: 0;
-    }
+@keyframes spaceBounce2 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    15% { transform: translate(-120px, 90px) rotate(-90deg); }
+    30% { transform: translate(-200px, -60px) rotate(-180deg); }
+    50% { transform: translate(-100px, -150px) rotate(-270deg); }
+    70% { transform: translate(90px, -80px) rotate(-360deg); }
+    85% { transform: translate(150px, 120px) rotate(-450deg); }
+    100% { transform: translate(0, 0) rotate(-540deg); }
 }
 
-@keyframes float3 {
-    0% {
-        transform: translate(0px, 0px) rotate(0deg);
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.3;
-    }
-    25% {
-        transform: translate(-25px, -15px) rotate(90deg);
-        opacity: 0.5;
-    }
-    50% {
-        transform: translate(15px, 20px) rotate(-150deg);
-        opacity: 0.7;
-    }
-    75% {
-        transform: translate(-10px, -25px) rotate(210deg);
-        opacity: 0.5;
-    }
-    90% {
-        opacity: 0.3;
-    }
-    100% {
-        transform: translate(0px, 0px) rotate(360deg);
-        opacity: 0;
-    }
+@keyframes spaceBounce3 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(180px, 100px) rotate(150deg); }
+    45% { transform: translate(300px, -120px) rotate(300deg); }
+    65% { transform: translate(80px, -200px) rotate(450deg); }
+    85% { transform: translate(-120px, -50px) rotate(600deg); }
+    100% { transform: translate(0, 0) rotate(720deg); }
+}
+
+@keyframes spaceBounce4 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    20% { transform: translate(-150px, -90px) rotate(-120deg); }
+    40% { transform: translate(-250px, 110px) rotate(-240deg); }
+    60% { transform: translate(-100px, 180px) rotate(-360deg); }
+    80% { transform: translate(70px, 140px) rotate(-480deg); }
+    100% { transform: translate(0, 0) rotate(-600deg); }
+}
+
+@keyframes spaceBounce5 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    18% { transform: translate(160px, 70px) rotate(100deg); }
+    35% { transform: translate(280px, -90px) rotate(200deg); }
+    55% { transform: translate(120px, -180px) rotate(300deg); }
+    75% { transform: translate(-90px, -130px) rotate(400deg); }
+    90% { transform: translate(-140px, 80px) rotate(500deg); }
+    100% { transform: translate(0, 0) rotate(600deg); }
+}
+
+@keyframes spaceBounce6 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    22% { transform: translate(-140px, 100px) rotate(-110deg); }
+    45% { transform: translate(-220px, -70px) rotate(-220deg); }
+    67% { transform: translate(-90px, -170px) rotate(-330deg); }
+    85% { transform: translate(100px, -100px) rotate(-440deg); }
+    100% { transform: translate(0, 0) rotate(-540deg); }
+}
+
+@keyframes spaceBounce7 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    16% { transform: translate(170px, -100px) rotate(130deg); }
+    33% { transform: translate(290px, 120px) rotate(260deg); }
+    50% { transform: translate(110px, 190px) rotate(390deg); }
+    67% { transform: translate(-100px, 160px) rotate(520deg); }
+    83% { transform: translate(-180px, -60px) rotate(650deg); }
+    100% { transform: translate(0, 0) rotate(780deg); }
+}
+
+@keyframes spaceBounce8 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    19% { transform: translate(-160px, 80px) rotate(-100deg); }
+    38% { transform: translate(-270px, -110px) rotate(-200deg); }
+    57% { transform: translate(-110px, -190px) rotate(-300deg); }
+    76% { transform: translate(90px, -140px) rotate(-400deg); }
+    95% { transform: translate(150px, 110px) rotate(-500deg); }
+    100% { transform: translate(0, 0) rotate(-540deg); }
+}
+
+@keyframes spaceBounce9 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    21% { transform: translate(140px, -90px) rotate(110deg); }
+    42% { transform: translate(260px, 130px) rotate(220deg); }
+    63% { transform: translate(100px, 200px) rotate(330deg); }
+    84% { transform: translate(-110px, 170px) rotate(440deg); }
+    100% { transform: translate(0, 0) rotate(540deg); }
 }
 
 /* Menu Buttons */
@@ -445,18 +446,18 @@ body {
     color: #4ecdc4;
     opacity: 0.2;
     font-weight: bold;
-    animation: gameMathFloat 6s ease-in-out infinite;
+    animation: gameSpaceBounce 8s linear infinite;
+    will-change: transform;
 }
 
-@keyframes gameMathFloat {
-    0%, 100% {
-        transform: translateY(0px) rotate(0deg);
-        opacity: 0.2;
-    }
-    50% {
-        transform: translateY(-15px) rotate(180deg);
-        opacity: 0.4;
-    }
+@keyframes gameSpaceBounce {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    16% { transform: translate(120px, -80px) rotate(100deg); }
+    33% { transform: translate(200px, 60px) rotate(200deg); }
+    50% { transform: translate(80px, 140px) rotate(300deg); }
+    67% { transform: translate(-100px, 100px) rotate(400deg); }
+    83% { transform: translate(-160px, -60px) rotate(500deg); }
+    100% { transform: translate(0, 0) rotate(600deg); }
 }
 
 .game-header {
