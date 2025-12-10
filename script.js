@@ -102,7 +102,7 @@ class MathGame {
                 levelTitle.textContent = 'Level 2 - Math Problems';
                 break;
             case 3:
-                levelTitle.textContent = 'Level 3 - Basic Subtraction';
+                levelTitle.textContent = 'Level 3 - Advanced Pi Problems';
                 break;
         }
         
@@ -187,6 +187,16 @@ class MathGame {
             existingQuarterCircles.remove();
         }
         
+        const existingSemicircle = document.getElementById('semicircleVisual');
+        if (existingSemicircle) {
+            existingSemicircle.remove();
+        }
+        
+        const existingChessboard = document.getElementById('piChessboard');
+        if (existingChessboard) {
+            existingChessboard.remove();
+        }
+        
         let question, correctAnswer, options, piEquation = null;
         
         switch(this.currentLevel) {
@@ -236,7 +246,7 @@ class MathGame {
                         options = this.generateOptions(correctAnswer, 8, 16);
                         
                         // Add circle visual
-                        this.displayCircleVisual();
+                        this.displayCircleVisual(2);
                 break;
                     case 2:
                         // Square with inscribed circle - shaded area problem
@@ -260,12 +270,11 @@ class MathGame {
                 break;
                 
             case 3:
-                // Basic subtraction (1-20)
-                const c = Math.floor(Math.random() * 15) + 5;
-                const d = Math.floor(Math.random() * 10) + 1;
-                correctAnswer = c - d;
-                question = `What is ${c} - ${d}?`;
-                options = this.generateOptions(correctAnswer, 0, 20);
+                // Pi Chessboard Game
+                question = `Use arrow keys or WASD to move. You will move until you hit an obstacle or the edge.`;
+                correctAnswer = null; // No specific answer needed
+                options = [];
+                this.displayPiChessboard();
                 break;
         }
         
@@ -304,6 +313,12 @@ class MathGame {
                 
                 // Add pi format instruction
                 this.addPiInstruction();
+            } else if (this.currentLevel === 3) {
+                // Level 3 uses chessboard interface - hide standard UI elements
+                this.answerOptions.style.display = 'none';
+                this.digitalKeyboard.style.display = 'none';
+                this.submitSection.style.display = 'none';
+                // Chessboard UI is handled in displayPiChessboard()
             } else {
                 // Show answer options for other levels
                 this.answerOptions.style.display = 'grid';
@@ -643,8 +658,8 @@ class MathGame {
     submitKeyboardAnswer() {
         if (this.userInput.length === 0) return;
         
-        // For Level 2, compare answers in pi format
-        if (this.currentLevel === 2) {
+        // For Level 2 and Level 3, compare answers (can be pi format or numeric)
+        if (this.currentLevel === 2 || this.currentLevel === 3) {
             // Normalize both user input and correct answer for comparison
             const normalizedUserInput = this.userInput.toLowerCase().replace(/\s/g, '');
             const normalizedCorrectAnswer = this.correctAnswer.toLowerCase().replace(/\s/g, '');
@@ -737,6 +752,26 @@ class MathGame {
                 }, 1000);
                 return;
             }
+        } else if (this.currentLevel === 3) {
+            // For Level 3, complete after 5 problems
+            console.log('Level 3 completion check - currentProblem:', this.currentProblem);
+            if (this.currentProblem >= 5) {
+                this.completeLevel(this.currentLevel);
+                setTimeout(() => {
+                    this.showCustomModal(
+                        "🎉 Level Complete!",
+                        `Level ${this.currentLevel} completed! You can now access the next level.`,
+                        () => this.backToMenu()
+                    );
+                }, 1000);
+                return;
+            } else {
+                // Move to next problem
+                setTimeout(() => {
+                    this.generateQuestion();
+                }, 1000);
+                return;
+            }
         }
     }
     
@@ -764,7 +799,7 @@ class MathGame {
         questionContainer.insertBefore(instruction, question);
     }
     
-    displayCircleVisual() {
+    displayCircleVisual(radius = 2) {
         // Remove any existing circle visual
         const existingCircle = document.getElementById('circleVisual');
         if (existingCircle) {
@@ -776,18 +811,29 @@ class MathGame {
         circleContainer.id = 'circleVisual';
         circleContainer.className = 'circle-visual-container';
         
-        // Create SVG circle with radius 2 (diameter 4)
+        // Scale SVG size based on radius (base size: 120x120 for radius 2)
+        const svgSize = Math.max(120, radius * 20 + 40);
+        const center = svgSize / 2;
+        const circleRadius = radius * 10; // Scale: 10px per unit radius
+        const radiusLineEnd = center + circleRadius;
+        
+        // Create SVG circle with dynamic radius
         circleContainer.innerHTML = `
-            <svg width="120" height="120" class="circle-svg">
-                <circle cx="60" cy="60" r="40" stroke="#4ecdc4" stroke-width="3" fill="rgba(78, 205, 196, 0.1)"/>
+            <svg width="${svgSize}" height="${svgSize}" class="circle-svg">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#ff6b6b"/>
+                    </marker>
+                </defs>
+                <circle cx="${center}" cy="${center}" r="${circleRadius}" stroke="#4ecdc4" stroke-width="3" fill="rgba(78, 205, 196, 0.1)"/>
                 <!-- Radius line -->
-                <line x1="60" y1="60" x2="100" y2="60" stroke="#ff6b6b" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <line x1="${center}" y1="${center}" x2="${radiusLineEnd}" y2="${center}" stroke="#ff6b6b" stroke-width="2" marker-end="url(#arrowhead)"/>
                 <!-- Radius label -->
-                <text x="80" y="55" text-anchor="middle" class="radius-label">2</text>
+                <text x="${center + circleRadius/2}" y="${center - 10}" text-anchor="middle" class="radius-label">${radius}</text>
                 <!-- Center point -->
-                <circle cx="60" cy="60" r="3" fill="#333"/>
+                <circle cx="${center}" cy="${center}" r="3" fill="#333"/>
             </svg>
-            <div class="circle-caption">Circle with radius = 2</div>
+            <div class="circle-caption">Circle with radius = ${radius}</div>
         `;
         
         // Insert the circle visual before the question
@@ -959,6 +1005,367 @@ class MathGame {
         const question = document.getElementById('question');
         questionContainer.insertBefore(visualContainer, question);
     }
+    
+    displaySemicircleVisual(radius) {
+        // Remove any existing semicircle visual
+        const existingVisual = document.getElementById('semicircleVisual');
+        if (existingVisual) {
+            existingVisual.remove();
+        }
+        
+        // Create semicircle visual container
+        const visualContainer = document.createElement('div');
+        visualContainer.id = 'semicircleVisual';
+        visualContainer.className = 'semicircle-visual-container';
+        
+        // Scale SVG size based on radius
+        const svgSize = Math.max(200, radius * 20 + 80);
+        const centerX = svgSize / 2;
+        const centerY = svgSize / 2;
+        const circleRadius = radius * 10;
+        
+        // Create SVG showing semicircle
+        visualContainer.innerHTML = `
+            <svg width="${svgSize}" height="${svgSize}" class="semicircle-svg">
+                <defs>
+                    <marker id="semicircleArrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#ff6b6b"/>
+                    </marker>
+                </defs>
+                <!-- Semicircle (top half of circle) -->
+                <path d="M ${centerX - circleRadius} ${centerY} A ${circleRadius} ${circleRadius} 0 0 1 ${centerX + circleRadius} ${centerY} Z" 
+                      fill="rgba(78, 205, 196, 0.2)" stroke="#4ecdc4" stroke-width="3"/>
+                <!-- Radius line -->
+                <line x1="${centerX}" y1="${centerY}" x2="${centerX + circleRadius}" y2="${centerY}" 
+                      stroke="#ff6b6b" stroke-width="2" marker-end="url(#semicircleArrow)"/>
+                <!-- Radius label -->
+                <text x="${centerX + circleRadius/2}" y="${centerY - 10}" text-anchor="middle" class="radius-label">${radius}</text>
+                <!-- Center point -->
+                <circle cx="${centerX}" cy="${centerY}" r="3" fill="#333"/>
+                <!-- Base line -->
+                <line x1="${centerX - circleRadius}" y1="${centerY}" x2="${centerX + circleRadius}" y2="${centerY}" 
+                      stroke="#333" stroke-width="2" stroke-dasharray="5,5"/>
+            </svg>
+            <div class="semicircle-caption">Semicircle with radius = ${radius}</div>
+        `;
+        
+        // Insert the visual before the question
+        const questionContainer = document.querySelector('.question-container');
+        const question = document.getElementById('question');
+        questionContainer.insertBefore(visualContainer, question);
+    }
+    
+    displayPiChessboard() {
+        // Remove any existing chessboard
+        const existingChessboard = document.getElementById('piChessboard');
+        if (existingChessboard) {
+            existingChessboard.remove();
+        }
+        
+        // Initialize position tracking
+        // Note: x and y are 1-based (1-9), where row 9 = 1π (bottom), row 1 = 9π (top)
+        if (!this.chessboardPosition) {
+            this.chessboardPosition = { x: 1, y: 9 }; // Start at (1π, 1π) - column 1, row 9 (bottom-left)
+        } else {
+            // Reset to starting position
+            this.chessboardPosition = { x: 1, y: 9 };
+        }
+        
+        // Define obstacles: (3π, 2π) = col 3, row 8 and (3π, 3π) = col 3, row 7
+        // Row 9 = 1π, row 8 = 2π, row 7 = 3π, row 6 = 4π, row 5 = 5π
+        this.obstacles = [
+            { x: 3, y: 8 }, // 3π, 2π
+            { x: 3, y: 7 }, // 3π, 3π
+            { x: 5, y: 5 }  // 5π, 5π
+        ];
+        
+        // Define finish position: (9π, 9π) = col 9, row 1
+        this.finishPosition = { x: 9, y: 1 };
+        
+        // Create chessboard container
+        const chessboardContainer = document.createElement('div');
+        chessboardContainer.id = 'piChessboard';
+        chessboardContainer.className = 'pi-chessboard-container';
+        
+        // Create the chessboard HTML
+        chessboardContainer.innerHTML = `
+            <div class="chessboard-wrapper">
+                <div class="chessboard-grid-wrapper">
+                    <div class="chessboard-grid" id="chessboardGrid">
+                        <!-- Board will be generated here -->
+                    </div>
+                    <div class="pi-pie" id="piPie">
+                        <div class="pie-top">
+                            <div class="pie-engraving">r=1</div>
+                        </div>
+                        <div class="pie-crust"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Insert the chessboard before the question
+        const questionContainer = document.querySelector('.question-container');
+        const question = document.getElementById('question');
+        questionContainer.insertBefore(chessboardContainer, question);
+        
+        // Generate the chessboard grid
+        this.generateChessboard();
+        
+        // Position the pie initially at (1π, 1π) - column 1, row 9
+        setTimeout(() => {
+            this.updatePiePosition(1, 9);
+        }, 100);
+        
+        // Set up event listeners
+        this.setupChessboardControls();
+    }
+    
+    updatePiePosition(col, row) {
+        const piPie = document.getElementById('piPie');
+        if (!piPie) return;
+        
+        // Each cell is 50px (450px / 9 cells)
+        const cellSize = 50;
+        const x = (col - 1) * cellSize + cellSize / 2 - 30; // Center the pie in cell (pie is 60px wide)
+        const y = (row - 1) * cellSize + cellSize / 2 - 30;
+        
+        piPie.style.left = x + 'px';
+        piPie.style.top = y + 'px';
+        piPie.style.display = 'block';
+    }
+    
+    generateChessboard() {
+        const grid = document.getElementById('chessboardGrid');
+        if (!grid) return;
+        
+        grid.innerHTML = '';
+        
+        // Generate 9x9 grid (1π through 9π)
+        for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+                const cell = document.createElement('div');
+                cell.className = 'chessboard-cell';
+                
+                // Convert to 1-based coordinates for checking
+                const cellX = col + 1;
+                const cellY = row + 1;
+                
+                // Alternate colors
+                if ((row + col) % 2 === 0) {
+                    cell.classList.add('light-square');
+                } else {
+                    cell.classList.add('dark-square');
+                }
+                
+                // Check if this cell is an obstacle
+                const isObstacle = this.obstacles.some(obs => obs.x === cellX && obs.y === cellY);
+                if (isObstacle) {
+                    cell.classList.add('obstacle-cell');
+                    const obstacleIcon = document.createElement('div');
+                    obstacleIcon.className = 'obstacle-icon';
+                    obstacleIcon.textContent = '⬛';
+                    cell.appendChild(obstacleIcon);
+                }
+                
+                // Check if this cell is the finish
+                if (this.finishPosition.x === cellX && this.finishPosition.y === cellY) {
+                    cell.classList.add('finish-cell');
+                    const starIcon = document.createElement('div');
+                    starIcon.className = 'finish-star';
+                    starIcon.textContent = '⭐';
+                    cell.appendChild(starIcon);
+                }
+                
+                // Add row labels (vertical - left side)
+                if (col === 0) {
+                    const label = document.createElement('div');
+                    label.className = 'row-label';
+                    label.textContent = `${9 - row}π`;
+                    cell.appendChild(label);
+                }
+                
+                // Add column labels (horizontal - bottom)
+                if (row === 8) {
+                    const label = document.createElement('div');
+                    label.className = 'col-label';
+                    label.textContent = `${col + 1}π`;
+                    cell.appendChild(label);
+                }
+                
+                grid.appendChild(cell);
+            }
+        }
+    }
+    
+    setupChessboardControls() {
+        // Track pressed keys to prevent diagonal movement
+        this.pressedKeys = new Set();
+        this.isMoving = false;
+        
+        // Arrow key and WASD controls - move until hitting obstacle or edge
+        const arrowKeyHandler = (e) => {
+            if (this.currentLevel !== 3) return;
+            
+            // Track which keys are pressed
+            if (e.type === 'keydown') {
+                switch(e.key) {
+                    case 'ArrowUp':
+                    case 'w':
+                    case 'W':
+                    case 'ArrowRight':
+                    case 'd':
+                    case 'D':
+                    case 'ArrowDown':
+                    case 's':
+                    case 'S':
+                    case 'ArrowLeft':
+                    case 'a':
+                    case 'A':
+                        e.preventDefault();
+                        this.pressedKeys.add(e.key);
+                        break;
+                }
+                
+                // Only move if exactly one direction key is pressed and not already moving
+                if (!this.isMoving && this.pressedKeys.size === 1) {
+                    let direction = null;
+                    const key = Array.from(this.pressedKeys)[0];
+                    
+                    switch(key) {
+                        case 'ArrowUp':
+                        case 'w':
+                        case 'W':
+                            direction = 'up';
+                            break;
+                        case 'ArrowRight':
+                        case 'd':
+                        case 'D':
+                            direction = 'right';
+                            break;
+                        case 'ArrowDown':
+                        case 's':
+                        case 'S':
+                            direction = 'down';
+                            break;
+                        case 'ArrowLeft':
+                        case 'a':
+                        case 'A':
+                            direction = 'left';
+                            break;
+                    }
+                    
+                    if (direction) {
+                        this.moveUntilObstacle(direction);
+                    }
+                }
+            } else if (e.type === 'keyup') {
+                // Remove key from pressed keys when released
+                switch(e.key) {
+                    case 'ArrowUp':
+                    case 'w':
+                    case 'W':
+                    case 'ArrowRight':
+                    case 'd':
+                    case 'D':
+                    case 'ArrowDown':
+                    case 's':
+                    case 'S':
+                    case 'ArrowLeft':
+                    case 'a':
+                    case 'A':
+                        this.pressedKeys.delete(e.key);
+                        break;
+                }
+            }
+        };
+        
+        // Remove any existing handlers and add new ones
+        document.removeEventListener('keydown', this.chessboardKeyHandler);
+        document.removeEventListener('keyup', this.chessboardKeyUpHandler);
+        this.chessboardKeyHandler = arrowKeyHandler;
+        this.chessboardKeyUpHandler = arrowKeyHandler;
+        document.addEventListener('keydown', arrowKeyHandler);
+        document.addEventListener('keyup', arrowKeyHandler);
+    }
+    
+    moveUntilObstacle(direction) {
+        // Prevent multiple simultaneous movements
+        if (this.isMoving) return;
+        this.isMoving = true;
+        
+        let newX = this.chessboardPosition.x;
+        let newY = this.chessboardPosition.y;
+        
+        // Move one cell at a time until hitting obstacle or edge
+        while (true) {
+            let nextX = newX;
+            let nextY = newY;
+            
+            // Calculate next position
+            switch(direction) {
+                case 'up':
+                    nextY = newY - 1;
+                    break;
+                case 'right':
+                    nextX = newX + 1;
+                    break;
+                case 'down':
+                    nextY = newY + 1;
+                    break;
+                case 'left':
+                    nextX = newX - 1;
+                    break;
+            }
+            
+            // Check if next position is out of bounds
+            if (nextX < 1 || nextX > 9 || nextY < 1 || nextY > 9) {
+                break; // Hit the edge
+            }
+            
+            // Check if next position has an obstacle
+            if (this.isObstacle(nextX, nextY)) {
+                break; // Hit an obstacle
+            }
+            
+            // Move to next position
+            newX = nextX;
+            newY = nextY;
+        }
+        
+        // Update position
+        this.chessboardPosition.x = newX;
+        this.chessboardPosition.y = newY;
+        this.updatePiePosition(newX, newY);
+        
+        // Check if reached finish
+        if (newX === this.finishPosition.x && newY === this.finishPosition.y) {
+            this.reachFinish();
+        }
+        
+        // Reset movement flag after a short delay to allow next movement
+        setTimeout(() => {
+            this.isMoving = false;
+        }, 50);
+    }
+    
+    isObstacle(x, y) {
+        return this.obstacles.some(obs => obs.x === x && obs.y === y);
+    }
+    
+    reachFinish() {
+        // Level 3 completion when reaching the finish
+        this.completeLevel(3);
+        setTimeout(() => {
+            this.showCustomModal(
+                "🎉 Level Complete!",
+                "You reached the finish! Level 3 completed!",
+                () => this.backToMenu()
+            );
+        }, 500);
+    }
+    
+    
     
     selectDigit(blank, digit) {
         const index = parseInt(blank.dataset.index);
@@ -1240,13 +1647,13 @@ class MathGame {
             
             // Regenerate the question to reset everything
             this.generateQuestion();
-        } else if (this.currentLevel === 2) {
-            // For Level 2, restart the same problem
+        } else if (this.currentLevel === 2 || this.currentLevel === 3) {
+            // For Level 2 and Level 3, restart the same problem
             this.currentProblem--; // Decrement to stay on the same problem
             this.resetKeyboardInput();
             this.generateQuestion();
         } else {
-            // For Level 3, just regenerate the question
+            // For other levels, just regenerate the question
             this.correctAnswerCount = 0;
             this.generateQuestion();
         }
@@ -1358,8 +1765,7 @@ document.addEventListener('DOMContentLoaded', () => {
         element.style.top = pos.top;
         element.style.left = pos.left;
         element.style.right = pos.right;
-        element.style.animationDelay = Math.random() * 6 + 's';
-        element.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        // Don't override CSS animations - let them use the space bounce animations from CSS
         if (element.textContent === 'π') {
             element.style.color = '#4ecdc4';
             element.style.fontSize = '2.5rem';
