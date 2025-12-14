@@ -904,7 +904,10 @@ class MathGame {
                 box-sizing: border-box !important;
                 text-align: center !important;
                 margin: 1rem auto !important;
-                padding: 0.5rem !important;
+                padding: 0 !important;
+                background: none !important;
+                border: none !important;
+                border-radius: 0 !important;
                 overflow: visible !important;
             `;
         });
