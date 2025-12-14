@@ -52,16 +52,33 @@ class MathGame {
         this.keyboardInput = document.getElementById('keyboardInput');
         this.keyboardSubmit = document.getElementById('keyboardSubmit');
         this.userInput = '';
+        
+        // Verify all required elements exist
+        if (!this.titleScreen || !this.gameScreen || !this.level1Btn || !this.level2Btn || 
+            !this.level3Btn || !this.backBtn || !this.questionEl || !this.answerOptions) {
+            throw new Error('Required game elements not found on this page');
+        }
     }
     
     bindEvents() {
-        this.level1Btn.addEventListener('click', () => this.startLevel(1));
-        this.level2Btn.addEventListener('click', () => this.startLevel(2));
-        this.level3Btn.addEventListener('click', () => this.startLevel(3));
-        this.backBtn.addEventListener('click', () => this.backToMenu());
+        // Only bind events if elements exist
+        if (this.level1Btn) {
+            this.level1Btn.addEventListener('click', () => this.startLevel(1));
+        }
+        if (this.level2Btn) {
+            this.level2Btn.addEventListener('click', () => this.startLevel(2));
+        }
+        if (this.level3Btn) {
+            this.level3Btn.addEventListener('click', () => this.startLevel(3));
+        }
+        if (this.backBtn) {
+            this.backBtn.addEventListener('click', () => this.backToMenu());
+        }
         
         // Digital keyboard events
-        this.setupDigitalKeyboard();
+        if (this.digitalKeyboard && this.keyboardInput && this.keyboardSubmit) {
+            this.setupDigitalKeyboard();
+        }
         
         // Add fullscreen button event listener
         const fullscreenBtn = document.getElementById('fullscreenBtn');
@@ -74,11 +91,13 @@ class MathGame {
         }
         
         // Add event listeners to answer buttons
-        this.answerOptions.addEventListener('click', (e) => {
-            if (e.target.classList.contains('answer-btn')) {
-                this.checkAnswer(e.target);
-            }
-        });
+        if (this.answerOptions) {
+            this.answerOptions.addEventListener('click', (e) => {
+                if (e.target.classList.contains('answer-btn')) {
+                    this.checkAnswer(e.target);
+                }
+            });
+        }
     }
     
     updateLevelButtons() {
@@ -2007,6 +2026,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // Add some fun particle effects for the title screen
 document.addEventListener('DOMContentLoaded', () => {
     const titleAnimation = document.querySelector('.title-animation');
+    
+    // Only add animation if title animation element exists (only on game page)
+    if (!titleAnimation) {
+        return;
+    }
     
     // Create additional floating elements in corners
     const symbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '×', '÷', 'π'];
