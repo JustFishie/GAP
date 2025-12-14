@@ -1202,39 +1202,60 @@ class MathGame {
                 [allPositions[i], allPositions[j]] = [allPositions[j], allPositions[i]];
             }
             
-            // Helper function to check if position is diagonally adjacent to existing obstacles
-            const isDiagonalAdjacent = (x, y, obstacles) => {
+            // Helper function to check minimum distance from existing obstacles
+            const hasMinimumDistance = (x, y, obstacles, minDistance = 2) => {
                 for (const obs of obstacles) {
                     const dx = Math.abs(obs.x - x);
                     const dy = Math.abs(obs.y - y);
-                    // Check if diagonally adjacent (distance of sqrt(2))
-                    if (dx === 1 && dy === 1) {
-                        return true;
+                    const manhattanDistance = dx + dy;
+                    // Require at least minDistance cells away (Manhattan distance)
+                    if (manhattanDistance < minDistance) {
+                        return false;
                     }
                 }
-                return false;
+                return true;
             };
             
-            // Place obstacles randomly, but avoid too many diagonal adjacencies
-            let consecutiveDiagonal = 0;
+            // Helper function to count nearby obstacles (for cluster detection)
+            const countNearbyObstacles = (x, y, obstacles, radius = 2) => {
+                let count = 0;
+                for (const obs of obstacles) {
+                    const dx = Math.abs(obs.x - x);
+                    const dy = Math.abs(obs.y - y);
+                    const manhattanDistance = dx + dy;
+                    if (manhattanDistance <= radius) {
+                        count++;
+                    }
+                }
+                return count;
+            };
+            
+            // Place obstacles with spacing to prevent clusters
+            let placedWithSpacing = 0;
+            const minSpacingRequired = Math.floor(numObstacles * 0.7); // 70% should have good spacing
+            
             for (const pos of allPositions) {
                 if (obstacles.length >= numObstacles) break;
                 
-                // Allow some diagonal adjacencies but not too many in a row
-                const isDiagonal = isDiagonalAdjacent(pos.x, pos.y, obstacles);
-                if (isDiagonal && consecutiveDiagonal >= 2) {
-                    // Skip this position if we've had too many diagonal adjacencies
-                    continue;
+                // For first 70% of obstacles, require minimum distance
+                if (placedWithSpacing < minSpacingRequired) {
+                    if (!hasMinimumDistance(pos.x, pos.y, obstacles, 2)) {
+                        continue;
+                    }
+                    // Also check that we're not creating a cluster (max 1 nearby obstacle)
+                    if (countNearbyObstacles(pos.x, pos.y, obstacles, 2) > 1) {
+                        continue;
+                    }
+                    placedWithSpacing++;
+                } else {
+                    // For remaining obstacles, allow closer placement but still prevent large clusters
+                    if (countNearbyObstacles(pos.x, pos.y, obstacles, 2) > 2) {
+                        continue; // Don't place if there are already 2+ obstacles nearby
+                    }
                 }
                 
                 obstacles.push(pos);
                 used.add(`${pos.x},${pos.y}`);
-                
-                if (isDiagonal) {
-                    consecutiveDiagonal++;
-                } else {
-                    consecutiveDiagonal = 0;
-                }
             }
             
             // If we don't have enough obstacles, fill remaining randomly
