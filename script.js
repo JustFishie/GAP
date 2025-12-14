@@ -1230,14 +1230,39 @@ class MathGame {
                 return count;
             };
             
-            // Place obstacles with spacing to prevent clusters
+            // Helper function to divide board into regions and count obstacles per region
+            const getRegion = (x, y) => {
+                // Divide 9x9 board into 9 regions (3x3 grid of regions)
+                const regionX = Math.floor((x - 1) / 3);
+                const regionY = Math.floor((y - 1) / 3);
+                return regionY * 3 + regionX;
+            };
+            
+            const countObstaclesPerRegion = (obstacles) => {
+                const regionCounts = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+                for (const obs of obstacles) {
+                    const region = getRegion(obs.x, obs.y);
+                    regionCounts[region]++;
+                }
+                return regionCounts;
+            };
+            
+            // Place obstacles with spacing and ensure distribution across board
             let placedWithSpacing = 0;
-            const minSpacingRequired = Math.floor(numObstacles * 0.7); // 70% should have good spacing
+            const minSpacingRequired = Math.floor(numObstacles * 0.6); // 60% should have good spacing
+            const maxObstaclesPerRegion = Math.ceil(numObstacles / 6); // Max obstacles per region (distribute across 6-9 regions)
             
             for (const pos of allPositions) {
                 if (obstacles.length >= numObstacles) break;
                 
-                // For first 70% of obstacles, require minimum distance
+                // Check region distribution - don't place if region is already full
+                const regionCounts = countObstaclesPerRegion(obstacles);
+                const posRegion = getRegion(pos.x, pos.y);
+                if (regionCounts[posRegion] >= maxObstaclesPerRegion) {
+                    continue; // Skip if this region already has enough obstacles
+                }
+                
+                // For first 60% of obstacles, require minimum distance
                 if (placedWithSpacing < minSpacingRequired) {
                     if (!hasMinimumDistance(pos.x, pos.y, obstacles, 2)) {
                         continue;
