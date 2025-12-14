@@ -1170,13 +1170,13 @@ class MathGame {
     }
     
     generateRandomObstacles() {
-        // Generate 20-25 obstacles that require at least 5 moves to solve
+        // Generate 20-25 obstacles that require at least 9 moves to solve
         const start = { x: 1, y: 9 };
         const finish = { x: 9, y: 1 };
         const numObstacles = 20 + Math.floor(Math.random() * 6); // 20-25 obstacles
-        const minMovesRequired = 5;
+        const minMovesRequired = 9;
         
-        // Try multiple configurations to find one that requires at least 5 moves
+        // Try multiple configurations to find one that requires at least 9 moves
         for (let attempt = 0; attempt < 50; attempt++) {
             const obstacles = [];
             const used = new Set();
@@ -1270,14 +1270,14 @@ class MathGame {
                 }
             }
             
-            // Check if solvable and requires at least 5 moves
+            // Check if solvable and requires at least 9 moves
             const pathResult = this.hasPath(start, finish, obstacles);
             if (pathResult.hasPath && pathResult.minMoves >= minMovesRequired) {
                 return obstacles;
             }
         }
         
-        // Fallback: guaranteed solvable configuration that requires at least 5 moves
+        // Fallback: guaranteed solvable configuration that requires at least 9 moves
         // This configuration forces a longer path by blocking direct routes
         return [
             { x: 2, y: 8 }, { x: 3, y: 8 }, { x: 4, y: 8 }, { x: 5, y: 8 }, { x: 6, y: 8 }, { x: 7, y: 8 }, { x: 8, y: 8 },
