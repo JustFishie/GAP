@@ -129,7 +129,7 @@ body {
     line-height: 1.2;
 }
 
-/* About Me Page Styles */
+/* About GAP Page Styles */
 body.about-me-page {
     padding: 0;
     padding-bottom: 2rem;
@@ -1334,16 +1334,18 @@ body.about-me-page {
     border: 2px solid rgba(78, 205, 196, 0.3);
     width: 100%;
     overflow: visible;
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .square-circle-svg {
     display: block;
     margin: 0 auto;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-    max-width: 100%;
-    height: auto;
-    min-width: 700px;
-    max-width: 1000px;
+    width: 320px !important;
+    height: 320px !important;
+    max-width: 100% !important;
 }
 
 .square-circle-caption {
@@ -1402,16 +1404,18 @@ body.about-me-page {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     width: 100%;
     overflow: visible;
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .quarter-circles-svg {
     display: block;
     margin: 0 auto;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-    max-width: 100%;
-    height: auto;
-    min-width: 700px;
-    max-width: 1000px;
+    width: 320px !important;
+    height: 320px !important;
+    max-width: 100% !important;
 }
 
 .quarter-circles-caption {
@@ -1714,18 +1718,19 @@ body.about-me-page {
     border-radius: 15px;
     border: 2px solid rgba(78, 205, 196, 0.3);
     width: 100%;
-    overflow-x: auto;
-    overflow-y: visible;
-    min-width: 1200px;
+    overflow: visible;
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .circle-svg {
     display: block;
     margin: 0 auto;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-    width: 1200px !important;
-    height: 1200px !important;
-    max-width: none !important;
+    width: 320px !important;
+    height: 320px !important;
+    max-width: 100% !important;
 }
 
 .radius-label, .side-label {
@@ -1907,17 +1912,13 @@ body.about-me-page {
     .circle-visual-container {
         padding: 0.5rem;
         margin: 0.5rem 0;
+        max-width: 90%;
     }
     
     .circle-svg {
-        width: 1200px !important;
-        height: 1200px !important;
-        max-width: none !important;
-    }
-    
-    .circle-visual-container {
-        min-width: 1200px;
-        overflow-x: auto;
+        width: 320px !important;
+        height: 320px !important;
+        max-width: 100% !important;
     }
     
     .radius-label {
@@ -1930,8 +1931,9 @@ body.about-me-page {
     
     .square-circle-svg,
     .quarter-circles-svg {
-        min-width: 560px;
-        max-width: 100%;
+        width: 280px !important;
+        height: 280px !important;
+        max-width: 100% !important;
     }
     
     .digital-keyboard {
@@ -1975,9 +1977,9 @@ body.about-me-page {
     }
     
     .square-circle-svg {
-        min-width: 560px;
-        max-width: 100%;
-        height: auto;
+        width: 280px !important;
+        height: 280px !important;
+        max-width: 100% !important;
     }
     
     .square-circle-caption {
@@ -1985,9 +1987,9 @@ body.about-me-page {
     }
     
     .quarter-circles-svg {
-        min-width: 560px;
-        max-width: 100%;
-        height: auto;
+        width: 280px !important;
+        height: 280px !important;
+        max-width: 100% !important;
     }
     
     .about-me-container {

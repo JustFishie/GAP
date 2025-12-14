@@ -166,6 +166,12 @@ class MathGame {
     }
 
     generateQuestion() {
+        // Reset keyboard input styling
+        if (this.keyboardInput) {
+            this.keyboardInput.style.borderColor = '';
+            this.keyboardInput.style.backgroundColor = '';
+        }
+        
         // Clean up any existing visuals
         const existingCircle = document.getElementById('circleVisual');
         if (existingCircle) {
@@ -664,6 +670,11 @@ class MathGame {
     resetKeyboardInput() {
         this.userInput = '';
         this.updateKeyboardDisplay();
+        // Reset input styling
+        if (this.keyboardInput) {
+            this.keyboardInput.style.borderColor = '';
+            this.keyboardInput.style.backgroundColor = '';
+        }
     }
     
     submitKeyboardAnswer() {
@@ -757,8 +768,12 @@ class MathGame {
                 }, 1000);
                 return;
             } else {
-                // Move to next problem
+                // Move to next problem - reset input styling first
                 setTimeout(() => {
+                    if (this.keyboardInput) {
+                        this.keyboardInput.style.borderColor = '';
+                        this.keyboardInput.style.backgroundColor = '';
+                    }
                     this.generateQuestion();
                 }, 1000);
                 return;
@@ -777,8 +792,12 @@ class MathGame {
                 }, 1000);
                 return;
             } else {
-                // Move to next problem
+                // Move to next problem - reset input styling first
                 setTimeout(() => {
+                    if (this.keyboardInput) {
+                        this.keyboardInput.style.borderColor = '';
+                        this.keyboardInput.style.backgroundColor = '';
+                    }
                     this.generateQuestion();
                 }, 1000);
                 return;
@@ -822,16 +841,16 @@ class MathGame {
         circleContainer.id = 'circleVisual';
         circleContainer.className = 'circle-visual-container';
         
-        // Scale SVG size based on radius - make it 4x bigger and visible
-        // Use a fixed large size that will actually render (4x of ~300px = 1200px)
-        const svgSize = 1200;
+        // Scale SVG size - make it smaller
+        // Use a smaller, more reasonable size (20% smaller than 400px)
+        const svgSize = 320;
         const center = svgSize / 2;
         const circleRadius = radius * (svgSize / 4); // Scale based on SVG size
         const radiusLineEnd = center + circleRadius;
         
         // Create SVG circle with dynamic radius
         circleContainer.innerHTML = `
-            <svg width="${svgSize}" height="${svgSize}" class="circle-svg" viewBox="0 0 ${svgSize} ${svgSize}">
+            <svg class="circle-svg" viewBox="0 0 ${svgSize} ${svgSize}">
                 <defs>
                     <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
                         <polygon points="0 0, 10 3, 0 6" fill="#ff6b6b"/>
@@ -852,6 +871,17 @@ class MathGame {
         const questionContainer = document.querySelector('.question-container');
         const question = document.getElementById('question');
         questionContainer.insertBefore(circleContainer, question);
+        
+        // Force set the size directly on the SVG element after it's created
+        // This ensures it overrides any CSS rules
+        const svgElement = circleContainer.querySelector('.circle-svg');
+        if (svgElement) {
+            svgElement.setAttribute('width', svgSize);
+            svgElement.setAttribute('height', svgSize);
+            svgElement.style.setProperty('width', `${svgSize}px`, 'important');
+            svgElement.style.setProperty('height', `${svgSize}px`, 'important');
+            svgElement.style.setProperty('max-width', `${svgSize}px`, 'important');
+        }
     }
     
     displaySquareCircleVisual() {
@@ -866,14 +896,14 @@ class MathGame {
         visualContainer.id = 'squareCircleVisual';
         visualContainer.className = 'square-circle-visual-container';
         
-        // Create SVG square with inscribed circle and shaded regions (responsive size, 2x bigger)
-        const svgSize = Math.min(1000, Math.max(700, window.innerWidth * 1.0));
+        // Create SVG square with inscribed circle and shaded regions - same size as first diagram
+        const svgSize = 320;
         const halfSize = svgSize / 2;
         const quarterSize = svgSize / 4;
         const circleRadius = quarterSize;
         
         visualContainer.innerHTML = `
-            <svg width="${svgSize}" height="${svgSize}" class="square-circle-svg" viewBox="0 0 ${svgSize} ${svgSize}">
+            <svg class="square-circle-svg" viewBox="0 0 ${svgSize} ${svgSize}">
                 <defs>
                     <!-- Define a mask to exclude the circle area -->
                     <mask id="circleMask">
@@ -966,14 +996,14 @@ class MathGame {
         visualContainer.id = 'quarterCirclesVisual';
         visualContainer.className = 'quarter-circles-visual-container';
         
-        // Create SVG showing square with inscribed circle and quarter circles in corners (responsive size, 2x bigger)
-        const svgSize = Math.min(1000, Math.max(700, window.innerWidth * 1.0));
+        // Create SVG showing square with inscribed circle and quarter circles in corners - same size as first diagram
+        const svgSize = 320;
         const halfSize = svgSize / 2;
         const quarterSize = svgSize / 4;
         const circleRadius = quarterSize;
         
         visualContainer.innerHTML = `
-            <svg width="${svgSize}" height="${svgSize}" class="quarter-circles-svg" viewBox="0 0 ${svgSize} ${svgSize}">
+            <svg class="quarter-circles-svg" viewBox="0 0 ${svgSize} ${svgSize}">
                 <defs>
                     <!-- Clip paths for each quarter circle -->
                     <clipPath id="topLeftQuarter">
