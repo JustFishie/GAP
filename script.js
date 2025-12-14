@@ -1,18 +1,23 @@
 class MathGame {
     constructor() {
-        this.currentLevel = 1;
-        this.currentQuestion = null;
-        this.correctAnswer = null;
-        this.currentProblem = 0; // Track which problem we're on for Level 2
-        this.currentSelectedBlank = null; // Track which blank is currently selected
-        // Reset progress - clear completed levels
-        localStorage.removeItem('completedLevels');
-        this.completedLevels = [];
-        
-        this.initializeElements();
-        this.bindEvents();
-        this.updateLevelButtons();
-        this.generateQuestion();
+        try {
+            this.currentLevel = 1;
+            this.currentQuestion = null;
+            this.correctAnswer = null;
+            this.currentProblem = 0; // Track which problem we're on for Level 2
+            this.currentSelectedBlank = null; // Track which blank is currently selected
+            // Reset progress - clear completed levels
+            localStorage.removeItem('completedLevels');
+            this.completedLevels = [];
+            
+            this.initializeElements();
+            this.bindEvents();
+            this.updateLevelButtons();
+            this.generateQuestion();
+        } catch (error) {
+            console.error('Error initializing game:', error);
+            alert('Error loading game. Please check the console for details.');
+        }
     }
     
     initializeElements() {
@@ -274,7 +279,13 @@ class MathGame {
                 question = `Use arrow keys or WASD to move. You will move until you hit an obstacle or the edge.`;
                 correctAnswer = null; // No specific answer needed
                 options = [];
-                this.displayPiChessboard();
+                // Only generate chessboard when level 3 is actually started
+                try {
+                    this.displayPiChessboard();
+                } catch (error) {
+                    console.error('Error displaying chessboard:', error);
+                    question = 'Error loading level 3. Please refresh the page.';
+                }
                 break;
         }
         
@@ -1066,6 +1077,139 @@ class MathGame {
         questionContainer.insertBefore(visualContainer, question);
     }
     
+    generateRandomObstacles() {
+        // Generate 20-25 obstacles that require at least 5 moves to solve
+        const start = { x: 1, y: 9 };
+        const finish = { x: 9, y: 1 };
+        const numObstacles = 20 + Math.floor(Math.random() * 6); // 20-25 obstacles
+        const minMovesRequired = 5;
+        
+        // Try multiple configurations to find one that requires at least 5 moves
+        for (let attempt = 0; attempt < 50; attempt++) {
+            const obstacles = [];
+            const used = new Set();
+            
+            // Add start and finish to used set
+            used.add(`${start.x},${start.y}`);
+            used.add(`${finish.x},${finish.y}`);
+            
+            // Generate obstacles with spacing to spread them out
+            let placementAttempts = 0;
+            const maxPlacementAttempts = 500;
+            
+            while (obstacles.length < numObstacles && placementAttempts < maxPlacementAttempts) {
+                placementAttempts++;
+                const x = 1 + Math.floor(Math.random() * 9);
+                const y = 1 + Math.floor(Math.random() * 9);
+                const key = `${x},${y}`;
+                
+                if (!used.has(key)) {
+                    // Check minimum distance from existing obstacles (Manhattan distance)
+                    let tooClose = false;
+                    for (const obs of obstacles) {
+                        const distance = Math.abs(obs.x - x) + Math.abs(obs.y - y);
+                        // Require at least 2 cells distance for better spread
+                        if (distance < 2) {
+                            tooClose = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!tooClose) {
+                        obstacles.push({ x, y });
+                        used.add(key);
+                    }
+                }
+            }
+            
+            // Fill remaining slots if we couldn't place enough with spacing
+            placementAttempts = 0;
+            while (obstacles.length < numObstacles && placementAttempts < 300) {
+                placementAttempts++;
+                const x = 1 + Math.floor(Math.random() * 9);
+                const y = 1 + Math.floor(Math.random() * 9);
+                const key = `${x},${y}`;
+                
+                if (!used.has(key)) {
+                    obstacles.push({ x, y });
+                    used.add(key);
+                }
+            }
+            
+            // Check if solvable and requires at least 5 moves
+            const pathResult = this.hasPath(start, finish, obstacles);
+            if (pathResult.hasPath && pathResult.minMoves >= minMovesRequired) {
+                return obstacles;
+            }
+        }
+        
+        // Fallback: guaranteed solvable configuration that requires at least 5 moves
+        // This configuration forces a longer path by blocking direct routes
+        return [
+            { x: 2, y: 8 }, { x: 3, y: 8 }, { x: 4, y: 8 }, { x: 5, y: 8 }, { x: 6, y: 8 }, { x: 7, y: 8 }, { x: 8, y: 8 },
+            { x: 2, y: 7 }, { x: 4, y: 7 }, { x: 6, y: 7 }, { x: 8, y: 7 },
+            { x: 3, y: 6 }, { x: 5, y: 6 }, { x: 7, y: 6 },
+            { x: 2, y: 5 }, { x: 4, y: 5 }, { x: 6, y: 5 }, { x: 8, y: 5 },
+            { x: 3, y: 4 }, { x: 5, y: 4 }, { x: 7, y: 4 },
+            { x: 2, y: 3 }, { x: 4, y: 3 }, { x: 6, y: 3 }, { x: 8, y: 3 },
+            { x: 2, y: 2 }, { x: 3, y: 2 }, { x: 4, y: 2 }, { x: 5, y: 2 }, { x: 6, y: 2 }, { x: 7, y: 2 }, { x: 8, y: 2 }
+        ];
+    }
+    
+    hasPath(start, finish, obstacles) {
+        // BFS to check if there's a path from start to finish
+        const obstacleSet = new Set(obstacles.map(obs => `${obs.x},${obs.y}`));
+        const visited = new Set();
+        const queue = [{ x: start.x, y: start.y, moves: 0 }];
+        visited.add(`${start.x},${start.y}`);
+        
+        const directions = [
+            { dx: 0, dy: -1 }, // up
+            { dx: 1, dy: 0 },  // right
+            { dx: 0, dy: 1 },  // down
+            { dx: -1, dy: 0 }  // left
+        ];
+        
+        while (queue.length > 0) {
+            const current = queue.shift();
+            
+            if (current.x === finish.x && current.y === finish.y) {
+                return { hasPath: true, minMoves: current.moves };
+            }
+            
+            for (const dir of directions) {
+                let newX = current.x;
+                let newY = current.y;
+                
+                // Move until hitting obstacle or edge
+                while (true) {
+                    const nextX = newX + dir.dx;
+                    const nextY = newY + dir.dy;
+                    
+                    if (nextX < 1 || nextX > 9 || nextY < 1 || nextY > 9) {
+                        break; // Hit edge
+                    }
+                    
+                    const nextKey = `${nextX},${nextY}`;
+                    if (obstacleSet.has(nextKey)) {
+                        break; // Hit obstacle
+                    }
+                    
+                    newX = nextX;
+                    newY = nextY;
+                }
+                
+                const key = `${newX},${newY}`;
+                if (!visited.has(key)) {
+                    visited.add(key);
+                    queue.push({ x: newX, y: newY, moves: current.moves + 1 });
+                }
+            }
+        }
+        
+        return { hasPath: false, minMoves: Infinity };
+    }
+    
     displayPiChessboard() {
         // Remove any existing chessboard
         const existingChessboard = document.getElementById('piChessboard');
@@ -1074,23 +1218,18 @@ class MathGame {
         }
         
         // Initialize position tracking
-        // Note: x and y are 1-based (1-9), where row 9 = 1π (bottom), row 1 = 9π (top)
+        // Note: x and y are 1-based (1-9), where row 9 = 1 (bottom), row 1 = 9 (top)
         if (!this.chessboardPosition) {
-            this.chessboardPosition = { x: 1, y: 9 }; // Start at (1π, 1π) - column 1, row 9 (bottom-left)
+            this.chessboardPosition = { x: 1, y: 9 }; // Start at (1, 1) - column 1, row 9 (bottom-left)
         } else {
             // Reset to starting position
             this.chessboardPosition = { x: 1, y: 9 };
         }
         
-        // Define obstacles: (3π, 2π) = col 3, row 8 and (3π, 3π) = col 3, row 7
-        // Row 9 = 1π, row 8 = 2π, row 7 = 3π, row 6 = 4π, row 5 = 5π
-        this.obstacles = [
-            { x: 3, y: 8 }, // 3π, 2π
-            { x: 3, y: 7 }, // 3π, 3π
-            { x: 5, y: 5 }  // 5π, 5π
-        ];
+        // Generate random obstacles that make it hard but solvable
+        this.obstacles = this.generateRandomObstacles();
         
-        // Define finish position: (9π, 9π) = col 9, row 1
+        // Define finish position: (9, 9) = col 9, row 1
         this.finishPosition = { x: 9, y: 1 };
         
         // Create chessboard container
@@ -1107,7 +1246,6 @@ class MathGame {
                     </div>
                     <div class="pi-pie" id="piPie">
                         <div class="pie-top">
-                            <div class="pie-engraving">r=1</div>
                         </div>
                         <div class="pie-crust"></div>
                     </div>
@@ -1123,7 +1261,7 @@ class MathGame {
         // Generate the chessboard grid
         this.generateChessboard();
         
-        // Position the pie initially at (1π, 1π) - column 1, row 9
+        // Position the pie initially at (1, 1) - column 1, row 9
         setTimeout(() => {
             this.updatePiePosition(1, 9);
         }, 100);
@@ -1192,7 +1330,7 @@ class MathGame {
                 if (col === 0) {
                     const label = document.createElement('div');
                     label.className = 'row-label';
-                    label.textContent = `${9 - row}π`;
+                    label.textContent = `${9 - row}`;
                     cell.appendChild(label);
                 }
                 
@@ -1200,7 +1338,7 @@ class MathGame {
                 if (row === 8) {
                     const label = document.createElement('div');
                     label.className = 'col-label';
-                    label.textContent = `${col + 1}π`;
+                    label.textContent = `${col + 1}`;
                     cell.appendChild(label);
                 }
                 
@@ -1708,31 +1846,36 @@ class MathGame {
 
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    // Hide browser UI elements
-    if (window.location.protocol === 'file:') {
-        // Hide address bar if possible (works in some browsers)
-        window.scrollTo(0, 1);
+    try {
+        // Hide browser UI elements
+        if (window.location.protocol === 'file:') {
+            // Hide address bar if possible (works in some browsers)
+            window.scrollTo(0, 1);
+        }
+        
+        // Prevent context menu and text selection
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('selectstart', e => e.preventDefault());
+        
+        // Disable drag and drop
+        document.addEventListener('dragstart', e => e.preventDefault());
+        
+        // Add fullscreen functionality
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F11' || (e.key === 'f' && e.ctrlKey && e.shiftKey)) {
+                e.preventDefault();
+                toggleFullscreen();
+            }
+            if (e.key === 'Escape' && document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        });
+        
+        window.game = new MathGame();
+    } catch (error) {
+        console.error('Error loading game:', error);
+        document.body.innerHTML = '<div style="padding: 20px; font-family: Arial;"><h1>Error Loading Game</h1><p>There was an error loading the game. Please check the browser console (F12) for details.</p><p>Error: ' + error.message + '</p></div>';
     }
-    
-    // Prevent context menu and text selection
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('selectstart', e => e.preventDefault());
-    
-    // Disable drag and drop
-    document.addEventListener('dragstart', e => e.preventDefault());
-    
-    // Add fullscreen functionality
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'F11' || (e.key === 'f' && e.ctrlKey && e.shiftKey)) {
-            e.preventDefault();
-            toggleFullscreen();
-        }
-        if (e.key === 'Escape' && document.fullscreenElement) {
-            document.exitFullscreen();
-        }
-    });
-    
-    window.game = new MathGame();
     
     // Add console command for testing
     window.resetGame = () => {
