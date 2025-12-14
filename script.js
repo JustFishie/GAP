@@ -842,8 +842,8 @@ class MathGame {
         circleContainer.className = 'circle-visual-container';
         
         // Scale SVG size - make it smaller
-        // Use a smaller, more reasonable size (20% smaller than 400px)
-        const svgSize = 320;
+        // Set to 200px for a smaller diagram
+        const svgSize = 200;
         const center = svgSize / 2;
         const circleRadius = radius * (svgSize / 4); // Scale based on SVG size
         const radiusLineEnd = center + circleRadius;
@@ -889,9 +889,9 @@ class MathGame {
         }
         
         // Also ensure the container itself is the right size
-        circleContainer.style.setProperty('width', '320px', 'important');
-        circleContainer.style.setProperty('max-width', '320px', 'important');
-        circleContainer.style.setProperty('min-width', '320px', 'important');
+        circleContainer.style.setProperty('width', '200px', 'important');
+        circleContainer.style.setProperty('max-width', '200px', 'important');
+        circleContainer.style.setProperty('min-width', '200px', 'important');
         circleContainer.style.setProperty('box-sizing', 'border-box', 'important');
     }
     
