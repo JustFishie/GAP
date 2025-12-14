@@ -882,8 +882,17 @@ class MathGame {
             svgElement.style.setProperty('width', `${svgSize}px`, 'important');
             svgElement.style.setProperty('height', `${svgSize}px`, 'important');
             svgElement.style.setProperty('max-width', `${svgSize}px`, 'important');
+            svgElement.style.setProperty('min-width', `${svgSize}px`, 'important');
             svgElement.style.setProperty('box-sizing', 'border-box', 'important');
+            svgElement.style.setProperty('display', 'block', 'important');
+            svgElement.style.setProperty('margin', '0 auto', 'important');
         }
+        
+        // Also ensure the container itself is the right size
+        circleContainer.style.setProperty('width', '320px', 'important');
+        circleContainer.style.setProperty('max-width', '320px', 'important');
+        circleContainer.style.setProperty('min-width', '320px', 'important');
+        circleContainer.style.setProperty('box-sizing', 'border-box', 'important');
     }
     
     displaySquareCircleVisual() {

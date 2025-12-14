@@ -1713,12 +1713,13 @@ body.about-me-page {
 .circle-visual-container {
     text-align: center;
     margin: 1rem auto;
-    padding: 1rem;
+    padding: 0.5rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 15px;
     border: 2px solid rgba(78, 205, 196, 0.3);
     width: 320px;
     max-width: 320px;
+    min-width: 320px;
     box-sizing: border-box;
     overflow: visible;
 }
