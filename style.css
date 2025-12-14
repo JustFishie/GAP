@@ -1712,16 +1712,15 @@ body.about-me-page {
 /* Circle Visual Styles */
 .circle-visual-container {
     text-align: center;
-    margin: 1rem 0;
+    margin: 1rem auto;
     padding: 1rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 15px;
     border: 2px solid rgba(78, 205, 196, 0.3);
     width: 320px;
     max-width: 320px;
+    box-sizing: border-box;
     overflow: visible;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .circle-svg {
@@ -1730,7 +1729,8 @@ body.about-me-page {
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
     width: 320px !important;
     height: 320px !important;
-    max-width: 100% !important;
+    max-width: 320px !important;
+    box-sizing: border-box;
 }
 
 .radius-label, .side-label {
@@ -1911,15 +1911,17 @@ body.about-me-page {
     
     .circle-visual-container {
         padding: 0.5rem;
-        margin: 0.5rem 0;
+        margin: 0.5rem auto;
         width: 320px;
         max-width: 320px;
+        box-sizing: border-box;
     }
     
     .circle-svg {
         width: 320px !important;
         height: 320px !important;
         max-width: 320px !important;
+        box-sizing: border-box;
     }
     
     .radius-label {
