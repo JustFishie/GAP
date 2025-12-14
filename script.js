@@ -456,7 +456,7 @@ class MathGame {
             // Set a fixed height and font size to prevent layout shifts
             questionEl.style.height = Math.max(originalHeight, 100) + 'px';
             questionEl.style.minHeight = '100px';
-            questionEl.style.fontSize = '1.2rem'; // Fixed font size to prevent shifts
+            questionEl.style.fontSize = '18px'; // Fixed font size to prevent shifts
             questionEl.style.lineHeight = '1.4';
         }
     }
@@ -464,7 +464,7 @@ class MathGame {
     hideHint() {
         const questionEl = document.getElementById('question');
         questionEl.textContent = this.originalQuestionText;
-                questionEl.style.fontSize = '2.5rem'; // Reset to original font size
+                questionEl.style.fontSize = '18px'; // Reset to original font size
         
         // Reset height styles to allow natural sizing
         questionEl.style.height = '';
@@ -1125,39 +1125,60 @@ class MathGame {
             used.add(`${start.x},${start.y}`);
             used.add(`${finish.x},${finish.y}`);
             
-            // Generate obstacles with spacing to spread them out
-            let placementAttempts = 0;
-            const maxPlacementAttempts = 500;
-            
-            while (obstacles.length < numObstacles && placementAttempts < maxPlacementAttempts) {
-                placementAttempts++;
-                const x = 1 + Math.floor(Math.random() * 9);
-                const y = 1 + Math.floor(Math.random() * 9);
-                const key = `${x},${y}`;
-                
-                if (!used.has(key)) {
-                    // Check minimum distance from existing obstacles (Manhattan distance)
-                    let tooClose = false;
-                    for (const obs of obstacles) {
-                        const distance = Math.abs(obs.x - x) + Math.abs(obs.y - y);
-                        // Require at least 2 cells distance for better spread
-                        if (distance < 2) {
-                            tooClose = true;
-                            break;
-                        }
-                    }
-                    
-                    if (!tooClose) {
-                        obstacles.push({ x, y });
-                        used.add(key);
+            // Generate all possible positions and shuffle them for true randomness
+            const allPositions = [];
+            for (let x = 1; x <= 9; x++) {
+                for (let y = 1; y <= 9; y++) {
+                    const key = `${x},${y}`;
+                    if (!used.has(key)) {
+                        allPositions.push({ x, y });
                     }
                 }
             }
             
-            // Fill remaining slots if we couldn't place enough with spacing
-            placementAttempts = 0;
-            while (obstacles.length < numObstacles && placementAttempts < 300) {
-                placementAttempts++;
+            // Shuffle array using Fisher-Yates algorithm
+            for (let i = allPositions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allPositions[i], allPositions[j]] = [allPositions[j], allPositions[i]];
+            }
+            
+            // Helper function to check if position is diagonally adjacent to existing obstacles
+            const isDiagonalAdjacent = (x, y, obstacles) => {
+                for (const obs of obstacles) {
+                    const dx = Math.abs(obs.x - x);
+                    const dy = Math.abs(obs.y - y);
+                    // Check if diagonally adjacent (distance of sqrt(2))
+                    if (dx === 1 && dy === 1) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+            
+            // Place obstacles randomly, but avoid too many diagonal adjacencies
+            let consecutiveDiagonal = 0;
+            for (const pos of allPositions) {
+                if (obstacles.length >= numObstacles) break;
+                
+                // Allow some diagonal adjacencies but not too many in a row
+                const isDiagonal = isDiagonalAdjacent(pos.x, pos.y, obstacles);
+                if (isDiagonal && consecutiveDiagonal >= 2) {
+                    // Skip this position if we've had too many diagonal adjacencies
+                    continue;
+                }
+                
+                obstacles.push(pos);
+                used.add(`${pos.x},${pos.y}`);
+                
+                if (isDiagonal) {
+                    consecutiveDiagonal++;
+                } else {
+                    consecutiveDiagonal = 0;
+                }
+            }
+            
+            // If we don't have enough obstacles, fill remaining randomly
+            while (obstacles.length < numObstacles) {
                 const x = 1 + Math.floor(Math.random() * 9);
                 const y = 1 + Math.floor(Math.random() * 9);
                 const key = `${x},${y}`;

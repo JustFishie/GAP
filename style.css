@@ -780,7 +780,7 @@ body.about-me-page {
 
 .game-header h2 {
     color: #667eea;
-    font-size: 1.8rem;
+    font-size: 18px;
 }
 
 .score-display {
@@ -841,8 +841,8 @@ body.about-me-page {
 }
 
 .pi-equation {
-    font-size: 2.2rem;
-    font-weight: bold;
+    font-size: 18px;
+    font-weight: normal;
     color: #333;
     font-family: 'Courier New', monospace;
     letter-spacing: 2px;
@@ -1051,8 +1051,8 @@ body.about-me-page {
 }
 
 .question {
-    font-size: 2.5rem;
-    font-weight: bold;
+    font-size: 18px;
+    font-weight: normal;
     color: #333;
     margin-bottom: 2rem;
     padding: 1rem;
@@ -1086,8 +1086,8 @@ body.about-me-page {
     border: none;
     color: white;
     padding: 1.5rem;
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 18px;
+    font-weight: normal;
     border-radius: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1168,7 +1168,7 @@ body.about-me-page {
 #keyboardInput {
     width: 100%;
     padding: 1rem;
-    font-size: 1.5rem;
+    font-size: 18px;
     text-align: center;
     border: 2px solid #4ecdc4;
     border-radius: 10px;
@@ -1301,7 +1301,7 @@ body.about-me-page {
 }
 
 .instruction-icon {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bold;
     background: rgba(255, 255, 255, 0.2);
     padding: 0.3rem 0.6rem;
@@ -1878,12 +1878,12 @@ body.about-me-page {
     }
     
     .question {
-        font-size: 2rem;
+        font-size: 18px;
     }
     
     .answer-btn {
         padding: 1rem;
-        font-size: 1.2rem;
+        font-size: 18px;
     }
     
     .pi-bubble {
@@ -1892,7 +1892,7 @@ body.about-me-page {
     }
     
     .pi-equation {
-        font-size: 1.8rem;
+        font-size: 18px;
         letter-spacing: 1px;
     }
     
