@@ -811,27 +811,28 @@ class MathGame {
         circleContainer.id = 'circleVisual';
         circleContainer.className = 'circle-visual-container';
         
-        // Scale SVG size based on radius (base size: 120x120 for radius 2)
-        const svgSize = Math.max(120, radius * 20 + 40);
+        // Scale SVG size based on radius - make it 4x bigger and visible
+        // Use a fixed large size that will actually render (4x of ~300px = 1200px)
+        const svgSize = 1200;
         const center = svgSize / 2;
-        const circleRadius = radius * 10; // Scale: 10px per unit radius
+        const circleRadius = radius * (svgSize / 4); // Scale based on SVG size
         const radiusLineEnd = center + circleRadius;
         
         // Create SVG circle with dynamic radius
         circleContainer.innerHTML = `
-            <svg width="${svgSize}" height="${svgSize}" class="circle-svg">
+            <svg width="${svgSize}" height="${svgSize}" class="circle-svg" viewBox="0 0 ${svgSize} ${svgSize}">
                 <defs>
                     <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
                         <polygon points="0 0, 10 3, 0 6" fill="#ff6b6b"/>
                     </marker>
                 </defs>
-                <circle cx="${center}" cy="${center}" r="${circleRadius}" stroke="#4ecdc4" stroke-width="3" fill="rgba(78, 205, 196, 0.1)"/>
+                <circle cx="${center}" cy="${center}" r="${circleRadius}" stroke="#4ecdc4" stroke-width="${Math.max(3, svgSize / 100)}" fill="rgba(78, 205, 196, 0.1)"/>
                 <!-- Radius line -->
-                <line x1="${center}" y1="${center}" x2="${radiusLineEnd}" y2="${center}" stroke="#ff6b6b" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <line x1="${center}" y1="${center}" x2="${radiusLineEnd}" y2="${center}" stroke="#ff6b6b" stroke-width="${Math.max(2, svgSize / 150)}" marker-end="url(#arrowhead)"/>
                 <!-- Radius label -->
-                <text x="${center + circleRadius/2}" y="${center - 10}" text-anchor="middle" class="radius-label">${radius}</text>
+                <text x="${center + circleRadius/2}" y="${center - svgSize * 0.05}" text-anchor="middle" class="radius-label" font-size="${Math.max(16, svgSize / 20)}">${radius}</text>
                 <!-- Center point -->
-                <circle cx="${center}" cy="${center}" r="3" fill="#333"/>
+                <circle cx="${center}" cy="${center}" r="${Math.max(3, svgSize / 100)}" fill="#333"/>
             </svg>
             <div class="circle-caption">Circle with radius = ${radius}</div>
         `;
@@ -854,29 +855,34 @@ class MathGame {
         visualContainer.id = 'squareCircleVisual';
         visualContainer.className = 'square-circle-visual-container';
         
-        // Create SVG square with inscribed circle and shaded regions
+        // Create SVG square with inscribed circle and shaded regions (responsive size, 2x bigger)
+        const svgSize = Math.min(1000, Math.max(700, window.innerWidth * 1.0));
+        const halfSize = svgSize / 2;
+        const quarterSize = svgSize / 4;
+        const circleRadius = quarterSize;
+        
         visualContainer.innerHTML = `
-            <svg width="200" height="200" class="square-circle-svg">
+            <svg width="${svgSize}" height="${svgSize}" class="square-circle-svg" viewBox="0 0 ${svgSize} ${svgSize}">
                 <defs>
                     <!-- Define a mask to exclude the circle area -->
                     <mask id="circleMask">
-                        <rect width="200" height="200" fill="white"/>
-                        <circle cx="100" cy="100" r="50" fill="black"/>
+                        <rect width="${svgSize}" height="${svgSize}" fill="white"/>
+                        <circle cx="${halfSize}" cy="${halfSize}" r="${circleRadius}" fill="black"/>
                     </mask>
                 </defs>
                 
                 <!-- Square with side length 4 -->
-                <rect x="50" y="50" width="100" height="100" stroke="#4ecdc4" stroke-width="3" fill="white"/>
+                <rect x="${quarterSize}" y="${quarterSize}" width="${halfSize}" height="${halfSize}" stroke="#4ecdc4" stroke-width="${Math.max(3, svgSize / 100)}" fill="white"/>
                 
                 <!-- Circle inscribed in square (radius 2, diameter 4) -->
-                <circle cx="100" cy="100" r="50" stroke="#4ecdc4" stroke-width="3" fill="none"/>
+                <circle cx="${halfSize}" cy="${halfSize}" r="${circleRadius}" stroke="#4ecdc4" stroke-width="${Math.max(3, svgSize / 100)}" fill="none"/>
                 
                 <!-- Shaded regions (area between square and circle) using mask -->
-                <rect x="50" y="50" width="100" height="100" fill="rgba(64, 64, 64, 0.6)" mask="url(#circleMask)"/>
+                <rect x="${quarterSize}" y="${quarterSize}" width="${halfSize}" height="${halfSize}" fill="rgba(64, 64, 64, 0.6)" mask="url(#circleMask)"/>
                 
                 <!-- Side length label -->
-                <line x1="50" y1="40" x2="150" y2="40" stroke="#ff6b6b" stroke-width="2"/>
-                <text x="100" y="35" text-anchor="middle" class="side-label">4</text>
+                <line x1="${quarterSize}" y1="${quarterSize * 0.8}" x2="${quarterSize + halfSize}" y2="${quarterSize * 0.8}" stroke="#ff6b6b" stroke-width="${Math.max(2, svgSize / 150)}"/>
+                <text x="${halfSize}" y="${quarterSize * 0.7}" text-anchor="middle" class="side-label" font-size="${Math.max(16, svgSize / 20)}">4</text>
             </svg>
             <div class="square-circle-caption">Square with inscribed circle (side length = 4)</div>
         `;
@@ -949,53 +955,58 @@ class MathGame {
         visualContainer.id = 'quarterCirclesVisual';
         visualContainer.className = 'quarter-circles-visual-container';
         
-        // Create SVG showing square with inscribed circle and quarter circles in corners
+        // Create SVG showing square with inscribed circle and quarter circles in corners (responsive size, 2x bigger)
+        const svgSize = Math.min(1000, Math.max(700, window.innerWidth * 1.0));
+        const halfSize = svgSize / 2;
+        const quarterSize = svgSize / 4;
+        const circleRadius = quarterSize;
+        
         visualContainer.innerHTML = `
-            <svg width="200" height="200" class="quarter-circles-svg">
+            <svg width="${svgSize}" height="${svgSize}" class="quarter-circles-svg" viewBox="0 0 ${svgSize} ${svgSize}">
                 <defs>
                     <!-- Clip paths for each quarter circle -->
                     <clipPath id="topLeftQuarter">
-                        <path d="M 50 50 L 50 100 A 50 50 0 0 0 100 50 Z"/>
+                        <path d="M ${quarterSize} ${quarterSize} L ${quarterSize} ${halfSize} A ${circleRadius} ${circleRadius} 0 0 0 ${halfSize} ${quarterSize} Z"/>
                     </clipPath>
                     <clipPath id="topRightQuarter">
-                        <path d="M 150 50 L 100 50 A 50 50 0 0 0 150 100 Z"/>
+                        <path d="M ${quarterSize + halfSize} ${quarterSize} L ${halfSize} ${quarterSize} A ${circleRadius} ${circleRadius} 0 0 0 ${quarterSize + halfSize} ${halfSize} Z"/>
                     </clipPath>
                     <clipPath id="bottomLeftQuarter">
-                        <path d="M 50 150 L 100 150 A 50 50 0 0 0 50 100 Z"/>
+                        <path d="M ${quarterSize} ${quarterSize + halfSize} L ${halfSize} ${quarterSize + halfSize} A ${circleRadius} ${circleRadius} 0 0 0 ${quarterSize} ${halfSize} Z"/>
                     </clipPath>
                     <clipPath id="bottomRightQuarter">
-                        <path d="M 150 150 L 150 100 A 50 50 0 0 0 100 150 Z"/>
+                        <path d="M ${quarterSize + halfSize} ${quarterSize + halfSize} L ${quarterSize + halfSize} ${halfSize} A ${circleRadius} ${circleRadius} 0 0 0 ${halfSize} ${quarterSize + halfSize} Z"/>
                     </clipPath>
                 </defs>
                 
                 <!-- Square with side length 4 -->
-                <rect x="50" y="50" width="100" height="100" stroke="#4ecdc4" stroke-width="3" fill="white"/>
+                <rect x="${quarterSize}" y="${quarterSize}" width="${halfSize}" height="${halfSize}" stroke="#4ecdc4" stroke-width="${Math.max(3, svgSize / 100)}" fill="white"/>
                 
                 <!-- Quarter circles outlines (no fill, just outlines) -->
-                <path d="M 50 50 L 50 100 A 50 50 0 0 0 100 50 Z" fill="none" stroke="#ff6b6b" stroke-width="2"/>
-                <path d="M 150 50 L 100 50 A 50 50 0 0 0 150 100 Z" fill="none" stroke="#ff6b6b" stroke-width="2"/>
-                <path d="M 50 150 L 100 150 A 50 50 0 0 0 50 100 Z" fill="none" stroke="#ff6b6b" stroke-width="2"/>
-                <path d="M 150 150 L 150 100 A 50 50 0 0 0 100 150 Z" fill="none" stroke="#ff6b6b" stroke-width="2"/>
+                <path d="M ${quarterSize} ${quarterSize} L ${quarterSize} ${halfSize} A ${circleRadius} ${circleRadius} 0 0 0 ${halfSize} ${quarterSize} Z" fill="none" stroke="#ff6b6b" stroke-width="${Math.max(2, svgSize / 150)}"/>
+                <path d="M ${quarterSize + halfSize} ${quarterSize} L ${halfSize} ${quarterSize} A ${circleRadius} ${circleRadius} 0 0 0 ${quarterSize + halfSize} ${halfSize} Z" fill="none" stroke="#ff6b6b" stroke-width="${Math.max(2, svgSize / 150)}"/>
+                <path d="M ${quarterSize} ${quarterSize + halfSize} L ${halfSize} ${quarterSize + halfSize} A ${circleRadius} ${circleRadius} 0 0 0 ${quarterSize} ${halfSize} Z" fill="none" stroke="#ff6b6b" stroke-width="${Math.max(2, svgSize / 150)}"/>
+                <path d="M ${quarterSize + halfSize} ${quarterSize + halfSize} L ${quarterSize + halfSize} ${halfSize} A ${circleRadius} ${circleRadius} 0 0 0 ${halfSize} ${quarterSize + halfSize} Z" fill="none" stroke="#ff6b6b" stroke-width="${Math.max(2, svgSize / 150)}"/>
                 
                 <!-- Center inscribed circle outline (no fill) -->
-                <circle cx="100" cy="100" r="50" stroke="#4ecdc4" stroke-width="3" fill="none"/>
+                <circle cx="${halfSize}" cy="${halfSize}" r="${circleRadius}" stroke="#4ecdc4" stroke-width="${Math.max(3, svgSize / 100)}" fill="none"/>
                 
                 <!-- Shaded overlapping regions: inscribed circle clipped by each quarter circle -->
                 <!-- Top-left overlap -->
-                <circle cx="100" cy="100" r="50" fill="rgba(64, 64, 64, 0.6)" clip-path="url(#topLeftQuarter)"/>
+                <circle cx="${halfSize}" cy="${halfSize}" r="${circleRadius}" fill="rgba(64, 64, 64, 0.6)" clip-path="url(#topLeftQuarter)"/>
                 
                 <!-- Top-right overlap -->
-                <circle cx="100" cy="100" r="50" fill="rgba(64, 64, 64, 0.6)" clip-path="url(#topRightQuarter)"/>
+                <circle cx="${halfSize}" cy="${halfSize}" r="${circleRadius}" fill="rgba(64, 64, 64, 0.6)" clip-path="url(#topRightQuarter)"/>
                 
                 <!-- Bottom-left overlap -->
-                <circle cx="100" cy="100" r="50" fill="rgba(64, 64, 64, 0.6)" clip-path="url(#bottomLeftQuarter)"/>
+                <circle cx="${halfSize}" cy="${halfSize}" r="${circleRadius}" fill="rgba(64, 64, 64, 0.6)" clip-path="url(#bottomLeftQuarter)"/>
                 
                 <!-- Bottom-right overlap -->
-                <circle cx="100" cy="100" r="50" fill="rgba(64, 64, 64, 0.6)" clip-path="url(#bottomRightQuarter)"/>
+                <circle cx="${halfSize}" cy="${halfSize}" r="${circleRadius}" fill="rgba(64, 64, 64, 0.6)" clip-path="url(#bottomRightQuarter)"/>
                 
                 <!-- Side length label -->
-                <line x1="50" y1="40" x2="150" y2="40" stroke="#ff6b6b" stroke-width="2"/>
-                <text x="100" y="35" text-anchor="middle" class="side-label">4</text>
+                <line x1="${quarterSize}" y1="${quarterSize * 0.8}" x2="${quarterSize + halfSize}" y2="${quarterSize * 0.8}" stroke="#ff6b6b" stroke-width="${Math.max(2, svgSize / 150)}"/>
+                <text x="${halfSize}" y="${quarterSize * 0.7}" text-anchor="middle" class="side-label" font-size="${Math.max(16, svgSize / 20)}">4</text>
             </svg>
             <div class="quarter-circles-caption">Square with inscribed circle and quarter circles in corners (side length = 4)</div>
         `;

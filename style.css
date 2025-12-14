@@ -722,6 +722,7 @@ body.about-me-page {
     color: #333;
     position: relative;
     margin: 0 auto;
+    overflow-x: auto;
 }
 
 .game-screen::before {
@@ -1331,12 +1332,18 @@ body.about-me-page {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 15px;
     border: 2px solid rgba(78, 205, 196, 0.3);
+    width: 100%;
+    overflow: visible;
 }
 
 .square-circle-svg {
     display: block;
     margin: 0 auto;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    max-width: 100%;
+    height: auto;
+    min-width: 700px;
+    max-width: 1000px;
 }
 
 .square-circle-caption {
@@ -1393,12 +1400,18 @@ body.about-me-page {
     background: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    overflow: visible;
 }
 
 .quarter-circles-svg {
     display: block;
     margin: 0 auto;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    max-width: 100%;
+    height: auto;
+    min-width: 700px;
+    max-width: 1000px;
 }
 
 .quarter-circles-caption {
@@ -1700,12 +1713,19 @@ body.about-me-page {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 15px;
     border: 2px solid rgba(78, 205, 196, 0.3);
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    min-width: 1200px;
 }
 
 .circle-svg {
     display: block;
     margin: 0 auto;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    width: 1200px !important;
+    height: 1200px !important;
+    max-width: none !important;
 }
 
 .radius-label, .side-label {
@@ -1890,8 +1910,14 @@ body.about-me-page {
     }
     
     .circle-svg {
-        width: 100px;
-        height: 100px;
+        width: 1200px !important;
+        height: 1200px !important;
+        max-width: none !important;
+    }
+    
+    .circle-visual-container {
+        min-width: 1200px;
+        overflow-x: auto;
     }
     
     .radius-label {
@@ -1900,6 +1926,12 @@ body.about-me-page {
     
     .circle-caption {
         font-size: 0.9rem;
+    }
+    
+    .square-circle-svg,
+    .quarter-circles-svg {
+        min-width: 560px;
+        max-width: 100%;
     }
     
     .digital-keyboard {
@@ -1943,12 +1975,19 @@ body.about-me-page {
     }
     
     .square-circle-svg {
-        width: 140px;
-        height: 140px;
+        min-width: 560px;
+        max-width: 100%;
+        height: auto;
     }
     
     .square-circle-caption {
         font-size: 0.9rem;
+    }
+    
+    .quarter-circles-svg {
+        min-width: 560px;
+        max-width: 100%;
+        height: auto;
     }
     
     .about-me-container {
