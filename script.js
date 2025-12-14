@@ -849,8 +849,9 @@ class MathGame {
         const radiusLineEnd = center + circleRadius;
         
         // Create SVG circle with dynamic radius
+        // Set explicit width and height attributes to prevent scaling
         circleContainer.innerHTML = `
-            <svg class="circle-svg" viewBox="0 0 ${svgSize} ${svgSize}">
+            <svg class="circle-svg" width="${svgSize}" height="${svgSize}" viewBox="0 0 ${svgSize} ${svgSize}" style="width: ${svgSize}px !important; height: ${svgSize}px !important; max-width: ${svgSize}px !important; box-sizing: border-box;">
                 <defs>
                     <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
                         <polygon points="0 0, 10 3, 0 6" fill="#ff6b6b"/>
@@ -881,6 +882,7 @@ class MathGame {
             svgElement.style.setProperty('width', `${svgSize}px`, 'important');
             svgElement.style.setProperty('height', `${svgSize}px`, 'important');
             svgElement.style.setProperty('max-width', `${svgSize}px`, 'important');
+            svgElement.style.setProperty('box-sizing', 'border-box', 'important');
         }
     }
     

@@ -1717,9 +1717,9 @@ body.about-me-page {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 15px;
     border: 2px solid rgba(78, 205, 196, 0.3);
-    width: 100%;
+    width: 320px;
+    max-width: 320px;
     overflow: visible;
-    max-width: 360px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -1912,13 +1912,14 @@ body.about-me-page {
     .circle-visual-container {
         padding: 0.5rem;
         margin: 0.5rem 0;
-        max-width: 90%;
+        width: 320px;
+        max-width: 320px;
     }
     
     .circle-svg {
         width: 320px !important;
         height: 320px !important;
-        max-width: 100% !important;
+        max-width: 320px !important;
     }
     
     .radius-label {
