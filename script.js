@@ -851,7 +851,7 @@ class MathGame {
         // Create SVG circle with dynamic radius
         // Set explicit width and height attributes to prevent scaling
         circleContainer.innerHTML = `
-            <svg class="circle-svg" width="${svgSize}" height="${svgSize}" viewBox="0 0 ${svgSize} ${svgSize}" style="width: ${svgSize}px !important; height: ${svgSize}px !important; max-width: ${svgSize}px !important; box-sizing: border-box; display: block; margin: 0 auto;">
+            <svg class="circle-svg" width="${svgSize}" height="${svgSize}" style="width: ${svgSize}px !important; height: ${svgSize}px !important; max-width: ${svgSize}px !important; min-width: ${svgSize}px !important; box-sizing: border-box !important; display: block !important; margin: 0 auto !important; flex-shrink: 0 !important; flex-grow: 0 !important; transform: none !important;">
                 <defs>
                     <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
                         <polygon points="0 0, 10 3, 0 6" fill="#ff6b6b"/>
@@ -873,26 +873,41 @@ class MathGame {
         const question = document.getElementById('question');
         questionContainer.insertBefore(circleContainer, question);
         
-        // Force set the size directly on the SVG element after it's created
-        // This ensures it overrides any CSS rules
-        const svgElement = circleContainer.querySelector('.circle-svg');
-        if (svgElement) {
-            svgElement.setAttribute('width', svgSize);
-            svgElement.setAttribute('height', svgSize);
-            svgElement.style.setProperty('width', `${svgSize}px`, 'important');
-            svgElement.style.setProperty('height', `${svgSize}px`, 'important');
-            svgElement.style.setProperty('max-width', `${svgSize}px`, 'important');
-            svgElement.style.setProperty('min-width', `${svgSize}px`, 'important');
-            svgElement.style.setProperty('box-sizing', 'border-box', 'important');
-            svgElement.style.setProperty('display', 'block', 'important');
-            svgElement.style.setProperty('margin', '0 auto', 'important');
-        }
-        
-        // Also ensure the container itself is the right size
-        circleContainer.style.setProperty('width', '200px', 'important');
-        circleContainer.style.setProperty('max-width', '200px', 'important');
-        circleContainer.style.setProperty('min-width', '200px', 'important');
-        circleContainer.style.setProperty('box-sizing', 'border-box', 'important');
+        // Use requestAnimationFrame to ensure DOM is ready before setting styles
+        requestAnimationFrame(() => {
+            // Force set the size directly on the SVG element after it's created
+            // This ensures it overrides any CSS rules
+            const svgElement = circleContainer.querySelector('.circle-svg');
+            if (svgElement) {
+                // Remove viewBox to prevent scaling - use fixed dimensions instead
+                svgElement.removeAttribute('viewBox');
+                svgElement.setAttribute('width', svgSize);
+                svgElement.setAttribute('height', svgSize);
+                svgElement.style.cssText = `
+                    width: ${svgSize}px !important;
+                    height: ${svgSize}px !important;
+                    max-width: ${svgSize}px !important;
+                    min-width: ${svgSize}px !important;
+                    box-sizing: border-box !important;
+                    display: block !important;
+                    margin: 0 auto !important;
+                    flex-shrink: 0 !important;
+                    flex-grow: 0 !important;
+                `;
+            }
+            
+            // Also ensure the container itself is the right size
+            circleContainer.style.cssText = `
+                width: ${svgSize}px !important;
+                max-width: ${svgSize}px !important;
+                min-width: ${svgSize}px !important;
+                box-sizing: border-box !important;
+                text-align: center !important;
+                margin: 1rem auto !important;
+                padding: 0.5rem !important;
+                overflow: visible !important;
+            `;
+        });
     }
     
     displaySquareCircleVisual() {
