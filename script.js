@@ -1,6 +1,15 @@
 class MathGame {
     constructor() {
         try {
+            // Check if we're on a game page before initializing
+            const titleScreen = document.getElementById('titleScreen');
+            const gameScreen = document.getElementById('gameScreen');
+            
+            if (!titleScreen || !gameScreen) {
+                // Not on a game page, don't initialize
+                return;
+            }
+            
             this.currentLevel = 1;
             this.currentQuestion = null;
             this.correctAnswer = null;
@@ -16,7 +25,12 @@ class MathGame {
             this.generateQuestion();
         } catch (error) {
             console.error('Error initializing game:', error);
-            alert('Error loading game. Please check the console for details.');
+            // Only show alert if we're actually on a game page
+            const titleScreen = document.getElementById('titleScreen');
+            const gameScreen = document.getElementById('gameScreen');
+            if (titleScreen && gameScreen) {
+                alert('Error loading game. Please check the console for details.');
+            }
         }
     }
     
@@ -1927,6 +1941,16 @@ class MathGame {
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     try {
+        // Check if we're on a page with game elements before initializing
+        const titleScreen = document.getElementById('titleScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        
+        // Only initialize game if we're on the main game page
+        if (!titleScreen || !gameScreen) {
+            // We're on an About page or other non-game page, skip game initialization
+            return;
+        }
+        
         // Hide browser UI elements
         if (window.location.protocol === 'file:') {
             // Hide address bar if possible (works in some browsers)
@@ -1954,7 +1978,12 @@ document.addEventListener('DOMContentLoaded', () => {
         window.game = new MathGame();
     } catch (error) {
         console.error('Error loading game:', error);
-        document.body.innerHTML = '<div style="padding: 20px; font-family: Arial;"><h1>Error Loading Game</h1><p>There was an error loading the game. Please check the browser console (F12) for details.</p><p>Error: ' + error.message + '</p></div>';
+        // Only show error on game pages
+        const titleScreen = document.getElementById('titleScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        if (titleScreen && gameScreen) {
+            document.body.innerHTML = '<div style="padding: 20px; font-family: Arial;"><h1>Error Loading Game</h1><p>There was an error loading the game. Please check the browser console (F12) for details.</p><p>Error: ' + error.message + '</p></div>';
+        }
     }
     
     // Add console command for testing
