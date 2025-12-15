@@ -19,6 +19,9 @@ class MathGame {
             localStorage.removeItem('completedLevels');
             this.completedLevels = [];
             
+            // Initialize settings
+            this.initializeSettings();
+            
             this.initializeElements();
             this.bindEvents();
             this.updateLevelButtons();
@@ -32,6 +35,67 @@ class MathGame {
                 alert('Error loading game. Please check the console for details.');
             }
         }
+    }
+    
+    initializeSettings() {
+        // Load mobile mode setting from localStorage (default to true for mobile devices)
+        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const savedMobileMode = localStorage.getItem('mobileMode');
+        this.mobileMode = savedMobileMode !== null ? savedMobileMode === 'true' : isMobileDevice;
+        localStorage.setItem('mobileMode', this.mobileMode.toString());
+        
+        // Set up settings modal
+        this.setupSettingsModal();
+    }
+    
+    setupSettingsModal() {
+        const settingsLink = document.getElementById('settingsLink');
+        const settingsModal = document.getElementById('settingsModal');
+        const settingsCloseBtn = document.getElementById('settingsCloseBtn');
+        const mobileModeToggle = document.getElementById('mobileModeToggle');
+        
+        if (!settingsLink || !settingsModal) return;
+        
+        // Set initial toggle state
+        if (mobileModeToggle) {
+            mobileModeToggle.checked = this.mobileMode;
+        }
+        
+        // Open settings modal
+        settingsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            settingsModal.style.display = 'flex';
+        });
+        
+        // Close settings modal
+        if (settingsCloseBtn) {
+            settingsCloseBtn.addEventListener('click', () => {
+                settingsModal.style.display = 'none';
+            });
+        }
+        
+        // Close on outside click
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+        });
+        
+        // Handle mobile mode toggle
+        if (mobileModeToggle) {
+            mobileModeToggle.addEventListener('change', (e) => {
+                this.mobileMode = e.target.checked;
+                localStorage.setItem('mobileMode', this.mobileMode.toString());
+                // Reload the question to apply the change
+                if (this.currentLevel === 1) {
+                    this.generateQuestion();
+                }
+            });
+        }
+    }
+    
+    isMobileMode() {
+        return this.mobileMode === true;
     }
     
     initializeElements() {
@@ -414,13 +478,21 @@ class MathGame {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Close any existing selector first
-                this.closeDigitSelector();
-                
-                // Small delay to ensure clean state
-                setTimeout(() => {
-                    this.showDigitSelector(e.target);
-                }, 10);
+                // In mobile mode, show digit selector popup
+                // In PC mode, just focus the blank for keyboard input
+                if (this.isMobileMode()) {
+                    // Close any existing selector first
+                    this.closeDigitSelector();
+                    
+                    // Small delay to ensure clean state
+                    setTimeout(() => {
+                        this.showDigitSelector(e.target);
+                    }, 10);
+                } else {
+                    // PC mode: focus the blank for direct keyboard input
+                    e.target.focus();
+                    this.currentSelectedBlank = e.target;
+                }
             }
         });
         
@@ -2067,6 +2139,60 @@ document.addEventListener('DOMContentLoaded', () => {
             document.exitFullscreen();
         }
     };
+});
+
+// Initialize settings modal on all pages
+document.addEventListener('DOMContentLoaded', () => {
+    // Set up settings modal (works on all pages)
+    const settingsLink = document.getElementById('settingsLink');
+    const settingsModal = document.getElementById('settingsModal');
+    const settingsCloseBtn = document.getElementById('settingsCloseBtn');
+    const mobileModeToggle = document.getElementById('mobileModeToggle');
+    
+    if (settingsLink && settingsModal) {
+        // Load mobile mode setting from localStorage
+        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const savedMobileMode = localStorage.getItem('mobileMode');
+        const mobileMode = savedMobileMode !== null ? savedMobileMode === 'true' : isMobileDevice;
+        
+        // Set initial toggle state
+        if (mobileModeToggle) {
+            mobileModeToggle.checked = mobileMode;
+        }
+        
+        // Open settings modal
+        settingsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            settingsModal.style.display = 'flex';
+        });
+        
+        // Close settings modal
+        if (settingsCloseBtn) {
+            settingsCloseBtn.addEventListener('click', () => {
+                settingsModal.style.display = 'none';
+            });
+        }
+        
+        // Close on outside click
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+        });
+        
+        // Handle mobile mode toggle
+        if (mobileModeToggle) {
+            mobileModeToggle.addEventListener('change', (e) => {
+                const newMobileMode = e.target.checked;
+                localStorage.setItem('mobileMode', newMobileMode.toString());
+                // If on game page and game is initialized, reload question
+                if (window.game && window.game.currentLevel === 1) {
+                    window.game.mobileMode = newMobileMode;
+                    window.game.generateQuestion();
+                }
+            });
+        }
+    }
 });
 
 // Add some fun particle effects for the title screen

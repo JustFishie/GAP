@@ -28,6 +28,9 @@
                 <li class="nav-item">
                     <a href="about-me.html" class="nav-link">About GAP</a>
                 </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" id="settingsLink">Settings</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -62,6 +65,28 @@
                 <div class="image-container">
                     <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXfqJzrZWNnq8wfqDc5IF3HczSxUQqOCIURtXbaQ9XVziWcRj2PtDjTcoxcr4_r0ue9OQ8_-tlHhZhdodk6nnlVQ4DJJ69TyOAlmOGC8mkHMcxJUsShhyGyXq9uIqWekWGWjFb-6g79J9pnRMBWMaErc?key=ToPNrQzmjI9a5yhUfHJHlQ" alt="Pi formula visualization" style="max-width: 100%; height: auto; border-radius: 10px; margin: 1rem 0;">
                     <p class="image-credit">Credits to BYJU'S</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="settings-modal" style="display: none;">
+        <div class="settings-modal-content">
+            <div class="settings-modal-header">
+                <h3>Settings</h3>
+                <button class="settings-close-btn" id="settingsCloseBtn">&times;</button>
+            </div>
+            <div class="settings-modal-body">
+                <div class="setting-item">
+                    <label for="mobileModeToggle" class="setting-label">
+                        <span>Mobile Mode</span>
+                        <span class="setting-description">Enable for touch-friendly interface</span>
+                    </label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="mobileModeToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
             </div>
         </div>
