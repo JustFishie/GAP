@@ -49,46 +49,14 @@ class MathGame {
     }
     
     setupSettingsModal() {
-        const settingsLink = document.getElementById('settingsLink');
-        const settingsModal = document.getElementById('settingsModal');
-        const settingsCloseBtn = document.getElementById('settingsCloseBtn');
+        // Mobile mode toggle is now in navigation, just set up the handler
         const mobileModeToggle = document.getElementById('mobileModeToggle');
         
-        if (!settingsLink || !settingsModal) return;
-        
-        // Set initial toggle state
         if (mobileModeToggle) {
+            // Set initial toggle state
             mobileModeToggle.checked = this.mobileMode;
-        }
-        
-        // Open settings modal
-        // Use onclick to prevent navigation
-        settingsLink.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-            if (settingsModal) {
-                settingsModal.style.setProperty('display', 'flex', 'important');
-            }
-            return false;
-        };
-        
-        // Close settings modal
-        if (settingsCloseBtn) {
-            settingsCloseBtn.addEventListener('click', () => {
-                settingsModal.style.display = 'none';
-            });
-        }
-        
-        // Close on outside click
-        settingsModal.addEventListener('click', (e) => {
-            if (e.target === settingsModal) {
-                settingsModal.style.display = 'none';
-            }
-        });
-        
-        // Handle mobile mode toggle
-        if (mobileModeToggle) {
+            
+            // Handle mobile mode toggle
             mobileModeToggle.addEventListener('change', (e) => {
                 this.mobileMode = e.target.checked;
                 localStorage.setItem('mobileMode', this.mobileMode.toString());
@@ -2147,70 +2115,30 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
-// Initialize settings modal on all pages
+// Initialize mobile mode toggle on all pages
 document.addEventListener('DOMContentLoaded', () => {
-    // Set up settings modal (works on all pages)
-    const settingsLink = document.getElementById('settingsLink');
-    const settingsModal = document.getElementById('settingsModal');
-    const settingsCloseBtn = document.getElementById('settingsCloseBtn');
+    // Set up mobile mode toggle (works on all pages)
     const mobileModeToggle = document.getElementById('mobileModeToggle');
     
-    console.log('Settings initialization:', { settingsLink, settingsModal, settingsCloseBtn, mobileModeToggle });
-    
-    if (settingsLink && settingsModal) {
+    if (mobileModeToggle) {
         // Load mobile mode setting from localStorage
         const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const savedMobileMode = localStorage.getItem('mobileMode');
         const mobileMode = savedMobileMode !== null ? savedMobileMode === 'true' : isMobileDevice;
         
         // Set initial toggle state
-        if (mobileModeToggle) {
-            mobileModeToggle.checked = mobileMode;
-        }
-        
-        // Open settings modal - use onclick to prevent any navigation
-        settingsLink.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-            console.log('Settings link clicked, opening modal');
-            if (settingsModal) {
-                settingsModal.style.setProperty('display', 'flex', 'important');
-                console.log('Modal display set to:', settingsModal.style.display);
-            }
-            return false;
-        };
-        
-        // Close settings modal
-        if (settingsCloseBtn) {
-            settingsCloseBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                settingsModal.style.display = 'none';
-            });
-        }
-        
-        // Close on outside click
-        settingsModal.addEventListener('click', (e) => {
-            if (e.target === settingsModal) {
-                settingsModal.style.display = 'none';
-            }
-        });
+        mobileModeToggle.checked = mobileMode;
         
         // Handle mobile mode toggle
-        if (mobileModeToggle) {
-            mobileModeToggle.addEventListener('change', (e) => {
-                const newMobileMode = e.target.checked;
-                localStorage.setItem('mobileMode', newMobileMode.toString());
-                // If on game page and game is initialized, reload question
-                if (window.game && window.game.currentLevel === 1) {
-                    window.game.mobileMode = newMobileMode;
-                    window.game.generateQuestion();
-                }
-            });
-        }
-    } else {
-        console.error('Settings elements not found:', { settingsLink, settingsModal });
+        mobileModeToggle.addEventListener('change', (e) => {
+            const newMobileMode = e.target.checked;
+            localStorage.setItem('mobileMode', newMobileMode.toString());
+            // If on game page and game is initialized, reload question
+            if (window.game && window.game.currentLevel === 1) {
+                window.game.mobileMode = newMobileMode;
+                window.game.generateQuestion();
+            }
+        });
     }
 });
 

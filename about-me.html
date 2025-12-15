@@ -28,8 +28,12 @@
                 <li class="nav-item">
                     <a href="about-me.html" class="nav-link">About GAP</a>
                 </li>
-                <li class="nav-item">
-                    <a href="javascript:void(0);" class="nav-link" id="settingsLink">Settings</a>
+                <li class="nav-item mobile-mode-item">
+                    <span class="nav-link mobile-mode-label">Mobile Mode</span>
+                    <label class="mobile-toggle-switch">
+                        <input type="checkbox" id="mobileModeToggle">
+                        <span class="mobile-toggle-slider"></span>
+                    </label>
                 </li>
             </ul>
         </div>
@@ -66,27 +70,6 @@
         </div>
     </div>
     
-    <!-- Settings Modal -->
-    <div id="settingsModal" class="settings-modal" style="display: none;">
-        <div class="settings-modal-content">
-            <div class="settings-modal-header">
-                <h3>Settings</h3>
-                <button class="settings-close-btn" id="settingsCloseBtn">&times;</button>
-            </div>
-            <div class="settings-modal-body">
-                <div class="setting-item">
-                    <label for="mobileModeToggle" class="setting-label">
-                        <span>Mobile Mode</span>
-                        <span class="setting-description">Enable for touch-friendly interface</span>
-                    </label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="mobileModeToggle">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
     
     <script src="script.js"></script>
 </body>
