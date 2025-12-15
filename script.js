@@ -2149,6 +2149,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsCloseBtn = document.getElementById('settingsCloseBtn');
     const mobileModeToggle = document.getElementById('mobileModeToggle');
     
+    console.log('Settings initialization:', { settingsLink, settingsModal, settingsCloseBtn, mobileModeToggle });
+    
     if (settingsLink && settingsModal) {
         // Load mobile mode setting from localStorage
         const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -2163,12 +2165,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Open settings modal
         settingsLink.addEventListener('click', (e) => {
             e.preventDefault();
-            settingsModal.style.display = 'flex';
+            e.stopPropagation();
+            console.log('Settings link clicked, opening modal');
+            settingsModal.style.setProperty('display', 'flex', 'important');
+            console.log('Modal display set to:', settingsModal.style.display);
+            console.log('Modal computed style:', window.getComputedStyle(settingsModal).display);
         });
         
         // Close settings modal
         if (settingsCloseBtn) {
-            settingsCloseBtn.addEventListener('click', () => {
+            settingsCloseBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 settingsModal.style.display = 'none';
             });
         }
@@ -2192,6 +2200,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+    } else {
+        console.error('Settings elements not found:', { settingsLink, settingsModal });
     }
 });
 
