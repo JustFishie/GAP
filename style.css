@@ -181,12 +181,12 @@ body {
 }
 
 .mobile-toggle-switch input:checked + .mobile-toggle-slider {
-    background-color: #ccc;
+    background-color: #667eea;
 }
 
 .mobile-toggle-switch input:checked + .mobile-toggle-slider:before {
     transform: translateX(24px);
-    border-color: #999;
+    border-color: #667eea;
 }
 
 .mobile-toggle-switch input:focus + .mobile-toggle-slider {
