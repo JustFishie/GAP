@@ -62,10 +62,16 @@ class MathGame {
         }
         
         // Open settings modal
-        settingsLink.addEventListener('click', (e) => {
+        // Use onclick to prevent navigation
+        settingsLink.onclick = (e) => {
             e.preventDefault();
-            settingsModal.style.display = 'flex';
-        });
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            if (settingsModal) {
+                settingsModal.style.setProperty('display', 'flex', 'important');
+            }
+            return false;
+        };
         
         // Close settings modal
         if (settingsCloseBtn) {
@@ -337,7 +343,7 @@ class MathGame {
                     }
                 }
                 
-                question = `Click on a blank or press Tab to focus, then type a number (0-9) or click to select, then submit when ready!`;
+                question = `Click on a blank, then type a number (0-9) or click to select, then submit when ready!`;
                 correctAnswer = null; // No specific answer needed
                 options = []; // No options needed
                 break;
@@ -2162,15 +2168,18 @@ document.addEventListener('DOMContentLoaded', () => {
             mobileModeToggle.checked = mobileMode;
         }
         
-        // Open settings modal
-        settingsLink.addEventListener('click', (e) => {
+        // Open settings modal - use onclick to prevent any navigation
+        settingsLink.onclick = (e) => {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             console.log('Settings link clicked, opening modal');
-            settingsModal.style.setProperty('display', 'flex', 'important');
-            console.log('Modal display set to:', settingsModal.style.display);
-            console.log('Modal computed style:', window.getComputedStyle(settingsModal).display);
-        });
+            if (settingsModal) {
+                settingsModal.style.setProperty('display', 'flex', 'important');
+                console.log('Modal display set to:', settingsModal.style.display);
+            }
+            return false;
+        };
         
         // Close settings modal
         if (settingsCloseBtn) {
